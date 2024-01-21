@@ -13,29 +13,29 @@
 
 **All the tasks will be performed within this MG5_aMC_v3_4_2 folder**
 
-1. Now you need to download and place the model named *HAHM_MG5model_v3* from http://insti.physics.sunysb.edu/~curtin/hahm_mg.html and extract the tarball using: 
+2. Now you need to download and place the model named *HAHM_MG5model_v3* from http://insti.physics.sunysb.edu/~curtin/hahm_mg.html and extract the tarball using: 
 
 ```wget https://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/HAHM/HAHM_MG5model_v3.zip ; unzip HAHM_MG5model_v3.zip ; rm -rf HAHM_MG5model_v3.zip```
 
-1. You will also need the ATLAS public results from HEP data file in this github repository:
+3. You will also need the ATLAS public results from HEP data file in this github repository:
 
 ```git clone https://github.com/ThomasChehab/recastingCodes.git ; scp recastingCodes/CalRatioDisplacedJet/HEPData*..yaml .```
 
-1. Now we can launch madgraph by: 
+4. Now we can launch madgraph by: 
 
 ```./bin/mg5_aMC ```
 
-1. In case you face an issue with python version (less that 3.7), you may upgrade your python version if you have the sudo rights to do, or you can create and activate a virtual python environment ( ```python3 -m venv env ; ./env/Scripts/activate``` ), equivalently and if you have access to cvmfs, you can setup ATLAS and Athena by: 
+5. In case you face an issue with python version (less that 3.7), you may upgrade your python version if you have the sudo rights to do, or you can create and activate a virtual python environment ( ```python3 -m venv env ; ./env/Scripts/activate``` ), equivalently and if you have access to cvmfs, you can setup ATLAS and Athena by: 
 
 ```source /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/user/atlasLocalSetup.sh ; asetup AnalysisBase,24.2.35```
 
-1. After entering in the MG konsole, install Pythia8 by writing:
+6. After entering in the MG konsole, install Pythia8 by writing:
 
 ```install pythia8```
 
 It will probably ask you to install LHAPDF6 as well, just accept and proceed.
 
-1. Now you (MG) need to convert the model file by writing :
+7. Now you (MG) need to convert the model file by writing :
 
 ```convert model ./HAHM_MG5model_v3/HAHM_variableMW_v3_UFO```
 
@@ -45,7 +45,7 @@ MG is now ready to generate events on your machine ! You can exit it.
 
 ## Lunching MadGraph jobs and generating the plots:
 
-1. Now, you are ready to create the scripts that MG will use to genetage the events, go to *recastingCodes/CalRatioDisplacedJet/*:
+8. Now, you are ready to create the scripts that MG will use to genetage the events, go to *recastingCodes/CalRatioDisplacedJet/*:
 
 ```cd recastingCodes/CalRatioDisplacedJet/```
 
@@ -55,8 +55,7 @@ And **open the "Jobs_submitter.py" file and update it according to your needs** 
 
 The generation can be relatively long depending on your computing ressources. 
 
-1. To complete the task, you can now process the data and obtain the plots and limits as well:
-
+9. To complete the task, you can now process the data and obtain the plots and limits as well:
 
 > [!NOTE]
 > Do not forget to activate your python environment or source ATLAS and Athena each time you connect.
