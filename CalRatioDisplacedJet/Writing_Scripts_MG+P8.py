@@ -93,4 +93,3 @@ for i in range(len(masses_phi)):
 
 for mass_phi,mass_s in zip(masses_phi,masses_S):
     os.system(f"./bin/mg5_aMC -f script_mH{mass_phi}_mS{mass_s}.txt") # Launch the Script in MG.
-

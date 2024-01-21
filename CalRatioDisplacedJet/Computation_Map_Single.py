@@ -1,8 +1,8 @@
 import sys
 import numpy as np
-import scipy
 import scipy.stats
 import matplotlib.pyplot as plt
+import scipy
 import time
 import readMapNew as rmN
 import tqdm
@@ -13,63 +13,55 @@ import Computation_Functions as cmfp
 import random
 import math
 import os
+import glob
+
+
+mass_Phi = int(sys.argv[1])
+mass_S = int(sys.argv[2])
+nevent = int(sys.argv[3])
+
+InDir = sys.argv[4]
+OutDir = sys.argv[5]
+
 
 random.seed(123)
 hep.style.use("ATLAS") # Define a style for the plots
 
-OutDir = "/users/divers/atlas/haddad/scratch/Recasting"  #<<<<<<< This is the only thing that need to be changedSS
+#Path Pythia8 file
+File_selection = [f"{OutDir}/Script_mH{mass_Phi}_mS{mass_S}/Events/run_01/tag_1_pythia8_events.hepmc.gz"] 
 
-#Path to Pythia8 outputs
-File_selection = [f"{OutDir}/Script_mH1000_mS275/Events/run_01/tag_1_pythia8_events.hepmc.gz",
-                  f"{OutDir}/Script_mH600_mS150/Events/run_01/tag_1_pythia8_events.hepmc.gz",
-                  f"{OutDir}/Script_mH400_mS100/Events/run_01/tag_1_pythia8_events.hepmc.gz",
-                  f"{OutDir}/Script_mH200_mS50/Events/run_01/tag_1_pythia8_events.hepmc.gz",
-                  f"{OutDir}/Script_mH125_mS55/Events/run_01/tag_1_pythia8_events.hepmc.gz"]
+#Path MadGraph file
+MG_File_selection = [f"{OutDir}/Script_mH{mass_Phi}_mS{mass_S}/Events/run_01/unweighted_events.lhe.gz"].
 
-#Path to MadGraph outputs
-MG_File_selection = [f"{OutDir}/Script_mH1000_mS275/Events/run_01/unweighted_events.lhe.gz",
-                     f"{OutDir}/Script_mH600_mS150/Events/run_01/unweighted_events.lhe.gz", 
-                     f"{OutDir}/Script_mH400_mS100/Events/run_01/unweighted_events.lhe.gz",
-                     f"{OutDir}/Script_mH200_mS50/Events/run_01/unweighted_events.lhe.gz",
-                     f"{OutDir}/Script_mH125_mS55/Events/run_01/unweighted_events.lhe.gz"] 
- 
-#HEP data files
-File_HEP = ["./ATLAS_data/HEPData-ins2043503-v3-Figure_2e_of_Aux._Mat._1000_275.root",
-            "./ATLAS_data/HEPData-ins2043503-v3-Figure_2d_of_Aux._Mat._600_150.root",
-            "./ATLAS_data/HEPData-ins2043503-v3-Figure_2c_of_Aux._Mat._400_100.root",
-            "./ATLAS_data/HEPData-ins2043503-v3-Figure_2c_of_Aux._Mat._200_50.root",
-            "./ATLAS_data/HEPData-ins2043503-v3-Figure_2b_of_Aux._Mat._125_55.root"]
+#HEP data file
+File_HEP = glob.glob(f"{InDir}/recastingCodes/CalRatioDisplacedJet/ATLAS_data/HEPData*_{mass_Phi}_{mass_S}.root")
 
-Branch_HEP = ["Figure 2e of Aux. Mat. 1000_275/Graph1D_y1;1",
-              "Figure 2d of Aux. Mat. 600_150/Graph1D_y1;1",
-              "Figure 2c of Aux. Mat. 400_100/Graph1D_y1;1",
-              "Figure 2c of Aux. Mat. 200_50/Graph1D_y1;1",
-              "Figure 2b of Aux. Mat. 125_55/Graph1D_y1;1"] 
+#HEP limits file
+File_HEP_limit = glob.glob(f"{InDir}/recastingCodes/CalRatioDisplacedJet/ATLAS_data/HEP_Limits/HEPData*_{mass_Phi}_{mass_S}.root")
 
-File_HEP_limit = ["./ATLAS_data/HEP_Limits/HEPData-ins2043503-v3-Figure_6f_of_Aux._Mat._1000_275.root",
-                  "./ATLAS_data/HEP_Limits/HEPData-ins2043503-v3-Figure_6b_of_Aux._Mat._600_150.root",
-                  "./ATLAS_data/HEP_Limits/HEPData-ins2043503-v3-Figure_6a_of_Aux._Mat._400_100.root",
-                  "./ATLAS_data/HEP_Limits/HEPData-ins2043503-v3-Figure_5f_of_Aux._Mat._200_50.root",
-                  "./ATLAS_data/HEP_Limits/HEPData-ins2043503-v3-Figure_10a_125_55.root"]
+#Branch from HEP data
+Branch_HEP = glob.glob(f"Figure * of Aux. Mat. {mass_Phi}_{mass_S}/Graph1D_y1;1")
+            "Figure 2d of Aux. Mat. 600_150/Graph1D_y1;1",
+            "Figure 2c of Aux. Mat. 400_100/Graph1D_y1;1",
+            "Figure 2c of Aux. Mat. 200_50/Graph1D_y1;1",
+            "Figure 2b of Aux. Mat. 125_55/Graph1D_y1;1"] 
+
+
 
 Branch_HEP_limit = ["Figure 6f of Aux. Mat./Graph1D_y1;1",
-                    "Figure 6b of Aux. Mat./Graph1D_y1;1",
-                    "Figure 6a of Aux. Mat./Graph1D_y1;1",
-                    "Figure 5f of Aux. Mat./Graph1D_y1;1",
-                    "Figure 10a/Graph1D_y1;1"]
+                "Figure 6b of Aux. Mat./Graph1D_y1;1"
+                "Figure 6a of Aux. Mat./Graph1D_y1;1",
+                "Figure 5f of Aux. Mat./Graph1D_y1;1",
+                "Figure 10a/Graph1D_y1;1"]
 
 
 #Constant
 c = 3e8# Light velocity in m/s
 
-Mass_phi = [1000, 600, 400, 200, 125] # Heavy Neutral Boson mass
-Mass_s = [275, 150, 100, 50, 55] # LLP mass (DH = Dark Higgs)
-Nevent = [20000,20000,20000,20000,20000] # Nbr of events
 HEP_Lifetime = [95,98,98,73,62]
 Factor = [1,1,1,1,0.048]
-os.system(f"mkdir -p ./Plots_High")
-os.system(f"mkdir -p ./Plots_Low")
-
+os.system("mkdir -p Plots_High")
+os.system("mkdir -p Plots_Low")
 
 count=0
 for file_selection, MG_file_selection,mass_phi,mass_s, nevent, factor in zip(File_selection, MG_File_selection, Mass_phi,Mass_s, Nevent, Factor):
@@ -104,7 +96,7 @@ for file_selection, MG_file_selection,mass_phi,mass_s, nevent, factor in zip(Fil
 
 ###########################################################Computing the efficiencies and ploting the results###########################################################
 
-    if mass_phi >= 400: # Condition if the sample is "High-ET" or "Low-ET"
+    if mass_phi >= 400: # Condition if the sample is "High-ET" or " Low-ET"
         MG_eff_highETX = cmfp.eff_map_MG_high(MG_pT_DH1, MG_eta_DH1,MG_Lxy_tot_DH1, MG_Lz_tot_DH1, MG_pdg_DH1_1, MG_pT_DH2, MG_eta_DH2, MG_Lxy_tot_DH2, MG_Lz_tot_DH2, MG_pdg_DH2_1, tauN, nevent,  mass_phi, mass_s) # Compute the efficiency from MG
         eff_highETX = cmfp.eff_map_High(pT_DH1, eta_DH1, Lxy_tot_DH1, Lz_tot_DH1, abs(pdg_tot_DH1), pT_DH2, eta_DH2, Lxy_tot_DH2, Lz_tot_DH2, abs(pdg_tot_DH2), tauN, nevent,  mass_phi, mass_s) # Compute the efficiency from Pythia
         cmfp.plt_eff_high(MG_eff_highETX, eff_highETX, tauN, data_HEP, mass_phi, mass_s ) # Ploting and saving a comparison of all the results of efficiencies
