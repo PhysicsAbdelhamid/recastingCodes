@@ -10,8 +10,9 @@ nevent = 500
 masses = [                         
           #[60, 5],
           #[125, 55],
-          [400, 100],
+          #[400, 100],
           #[600, 150],
+          [600, 250],
           #[1000, 275],
           ]
 
@@ -41,7 +42,7 @@ for mass_Phi, mass_S in masses:
     
     f.write(f"python3 {InDir}/recastingCodes/CalRatioDisplacedJet/Writing_Scripts_MG+P8_Single.py {mass_Phi} {mass_S} {nevent} {InDir} {OutDir}\n")
     f.write(f"cd {OutDir}\n")
-    #f.write(f"{InDir}/bin/mg5_aMC -f {OutDir}/script_mH{mass_Phi}_mS{mass_S}.txt\n")
+    f.write(f"{InDir}/bin/mg5_aMC -f {OutDir}/script_mH{mass_Phi}_mS{mass_S}.txt\n")
     f.write(f"cd {InDir}/recastingCodes/CalRatioDisplacedJet/\n")
     f.write(f"python3 {InDir}/recastingCodes/CalRatioDisplacedJet//Computation_Map_Single.py {mass_Phi} {mass_S} {InDir} {OutDir} \n")
     f.close()

@@ -634,12 +634,13 @@ def plt_eff_high(MG_eff_highETX, eff_highETX,tauN, data_HEP,  mass_phi , mass_s)
     ################## Plot efficiency from MG+Pythia8 ##################
     plt.plot(tauN,eff_highETX, 'r', linewidth=2, label = 'MG + Pythia')
     
-    ################## Plot efficiency from HEP data ##################
-    plt.plot(data_HEP.values(axis='both')[0],data_HEP.values(axis='both')[1], 'b')
+    if data_HEP is not None:
+       ################## Plot efficiency from HEP data ##################
+       plt.plot(data_HEP.values(axis='both')[0],data_HEP.values(axis='both')[1], 'b')
 
-    ################ Uncertainties from HEP ##################
-    plt.fill_between(data_HEP.values(axis='both')[0], data_HEP.values(axis='both')[1] +  data_HEP.errors('high')[1] , data_HEP.values(axis='both')[1] - data_HEP.errors('high')[1] , color = 'blue', label = r'ATLAS, with $\pm$ 1 $\sigma$ error bands',alpha=.7)
-
+       ################ Uncertainties from HEP ##################
+       plt.fill_between(data_HEP.values(axis='both')[0], data_HEP.values(axis='both')[1] +  data_HEP.errors('high')[1] , data_HEP.values(axis='both')[1] - data_HEP.errors('high')[1] , color = 'blue', label = r'ATLAS, with $\pm$ 1 $\sigma$ error bands',alpha=.7)
+ 
     ################## Uncertainties from Map ##################
     plt.fill_between(tauN, np.array(eff_highETX) + 0.25* np.array(eff_highETX), np.array(eff_highETX) - 0.25 * np.array(eff_highETX), label='MG+Pythia8, with error bands ', alpha=.7)
 
@@ -677,13 +678,14 @@ def plt_eff_low(MG_eff_lowETX, eff_lowETX,tauN, data_HEP,  mass_phi , mass_s):
 
     ################## Plot efficiency from MG+Pythia8 ##################
     plt.plot(tauN,eff_lowETX, 'r', linewidth=2 ,label = 'MG + Pythia')
-
-    ################## Plot efficiency from HEP data ##################
-    plt.plot(data_HEP.values(axis='both')[0],data_HEP.values(axis='both')[1], 'b')
-
-    ################ Uncertainties from HEP ##################
-    plt.fill_between(data_HEP.values(axis='both')[0], data_HEP.values(axis='both')[1] +  data_HEP.errors('high')[1] , data_HEP.values(axis='both')[1] - data_HEP.errors('high')[1] , color = 'blue', label = r'ATLAS, with $\pm$ 1 $\sigma$ error bands',alpha=.7)
-
+    
+    if data_HEP is not None:
+        ################## Plot efficiency from HEP data ##################
+        plt.plot(data_HEP.values(axis='both')[0],data_HEP.values(axis='both')[1], 'b')
+ 
+        ################ Uncertainties from HEP ##################
+        plt.fill_between(data_HEP.values(axis='both')[0], data_HEP.values(axis='both')[1] +  data_HEP.errors('high')[1] , data_HEP.values(axis='both')[1] - data_HEP.errors('high')[1] , color = 'blue', label = r'ATLAS, with $\pm$ 1 $\sigma$ error bands',alpha=.7)
+ 
     ################## Uncertainties from Map ##################
     plt.fill_between(tauN, np.array(eff_lowETX) + 0.25* np.array(eff_lowETX), np.array(eff_lowETX) - 0.25*np.array(eff_lowETX), label='MG+Pythia8, with error bands ',alpha=.7)
 
@@ -719,7 +721,8 @@ def plt_cross_High(eff_highETX, tauN, mass_phi, mass_s, branch_HEP_limit, factor
     Crr_Sec_obs = (Nsobs)/((np.array(eff_highETX)) * 139e3 ) # Luminosity = 139e3 fb**(-1)
 
     plt.plot(tauN, Crr_Sec_obs, 'r', label ='Map results', linewidth = 2)
-    plt.plot(np.array(branch_HEP_limit.values(axis='both')[0]), np.array(branch_HEP_limit.values(axis='both')[1]), 'b', label ='Observed', linewidth = 2)
+    if branch_HEP_limit is not None:
+      plt.plot(np.array(branch_HEP_limit.values(axis='both')[0]), np.array(branch_HEP_limit.values(axis='both')[1]), 'b', label ='Observed', linewidth = 2)
 
     plt.xscale('log')
     plt.yscale('log')
@@ -748,7 +751,9 @@ def plt_cross_Low(eff_lowETX , tauN, mass_phi, mass_s, branch_HEP_limit, factor)
     Crr_Sec_obs = (Nsobs)/((np.array(eff_lowETX)) * 139e3 )
 
     plt.plot(tauN, Crr_Sec_obs, 'r', label ='Map results', linewidth = 2)
-    plt.plot(tauN, np.array(branch_HEP_limit.values(axis='both')[1]), 'b', label ='Observed', linewidth = 2)
+    
+    if branch_HEP_limit is not None:
+        plt.plot(tauN, np.array(branch_HEP_limit.values(axis='both')[1]), 'b', label ='Observed', linewidth = 2)
 
     plt.xscale('log')
     plt.yscale('log')

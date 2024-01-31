@@ -80,7 +80,9 @@ MG_Lxy_tot_DH2, MG_Lz_tot_DH2 = cmfp.decaylenght_MG_DH2(MG_px_DH2, MG_py_DH2, MG
 
 
 #HEP data
-data_HEP, branch_HEP_limit = cmfp.elem_list(file_HEP, file_HEP_limit) # Recover public data from ATLAS to compare the results
+data_HEP, branch_HEP_limit = None, None
+if hasHEPData:
+  cmfp.elem_list(file_HEP, file_HEP_limit) # Recover public data from ATLAS to compare the results
 
 ########################################################################################################################################################################
 ########################################################################################################################################################################
