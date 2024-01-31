@@ -17,7 +17,7 @@ import os
 random.seed(123)
 hep.style.use("ATLAS") # Define a style for the plots
 
-OutDir = "/users/divers/atlas/haddad/scratch/Recasting"  #<<<<<<< This is the only thing that need to be changedSS
+OutDir = "/users/divers/atlas/corpe/scratch/Recasting"  #<<<<<<< This is the only thing that need to be changedSS
 
 #Path to Pythia8 outputs
 File_selection = [f"{OutDir}/Script_mH1000_mS275/Events/run_01/tag_1_pythia8_events.hepmc.gz",

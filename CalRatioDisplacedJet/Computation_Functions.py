@@ -609,13 +609,13 @@ def eff_map_MG_low(MG_pT_DH1, MG_eta_DH1,MG_Lxy_tot_DH1, MG_Lz_tot_DH1, MG_pdg_D
 # Computing HEP data
 #########################################################################################
 
-def elem_list(HEP, Branch_HEP, File_HEP_limit, Branch_HEP_limit):
+def elem_list(HEP, File_HEP_limit) :
 
     file_HEP = uproot.open(HEP) # open the file from HEP data for the efficiency
-    data_HEP = file_HEP[Branch_HEP] # open the branch
+    data_HEP = file_HEP[file_HEP.keys()[1]] # open the branch
 
     file_HEP_limit = uproot.open(File_HEP_limit) # open the file from HEP data for the limits
-    branch_HEP_limit = file_HEP_limit[Branch_HEP_limit] # open the branch
+    branch_HEP_limit = file_HEP_limit[file_HEP_limit.keys()[1]] # open the branch
 
     return data_HEP, branch_HEP_limit
 
@@ -633,7 +633,7 @@ def plt_eff_high(MG_eff_highETX, eff_highETX,tauN, data_HEP,  mass_phi , mass_s)
 
     ################## Plot efficiency from MG+Pythia8 ##################
     plt.plot(tauN,eff_highETX, 'r', linewidth=2, label = 'MG + Pythia')
-
+    
     ################## Plot efficiency from HEP data ##################
     plt.plot(data_HEP.values(axis='both')[0],data_HEP.values(axis='both')[1], 'b')
 
@@ -659,6 +659,7 @@ def plt_eff_high(MG_eff_highETX, eff_highETX,tauN, data_HEP,  mass_phi , mass_s)
     plt.ylabel('Efficiency', fontsize=20 )
     plt.legend(fontsize = 11, loc=1) # set the legend in the upper right corner
     plt.savefig(f"./Plots_High/Efficiency_comparison_mH{mass_phi}_mS{mass_s}.png")
+    print(f"./Plots_High/Efficiency_comparison_mH{mass_phi}_mS{mass_s}.png")
     plt.close()
 
 
@@ -702,6 +703,7 @@ def plt_eff_low(MG_eff_lowETX, eff_lowETX,tauN, data_HEP,  mass_phi , mass_s):
     plt.ylabel('Efficiency', fontsize=20 )
     plt.legend( fontsize = 10, loc=1) # set the legend in the upper right corner
     plt.savefig(f"./Plots_Low/Efficiency_comparison_mH{mass_phi}_mS{mass_s}.png")
+    print(f"./Plots_Low/Efficiency_comparison_mH{mass_phi}_mS{mass_s}.png")
     plt.close()
 
 #########################################################################################
@@ -717,7 +719,7 @@ def plt_cross_High(eff_highETX, tauN, mass_phi, mass_s, branch_HEP_limit, factor
     Crr_Sec_obs = (Nsobs)/((np.array(eff_highETX)) * 139e3 ) # Luminosity = 139e3 fb**(-1)
 
     plt.plot(tauN, Crr_Sec_obs, 'r', label ='Map results', linewidth = 2)
-    plt.plot(tauN, np.array(branch_HEP_limit.values(axis='both')[1]), 'b', label ='Observed', linewidth = 2)
+    plt.plot(np.array(branch_HEP_limit.values(axis='both')[0]), np.array(branch_HEP_limit.values(axis='both')[1]), 'b', label ='Observed', linewidth = 2)
 
     plt.xscale('log')
     plt.yscale('log')
@@ -730,6 +732,7 @@ def plt_cross_High(eff_highETX, tauN, mass_phi, mass_s, branch_HEP_limit, factor
 
     plt.legend( fontsize = 10, loc=3)
     plt.savefig(f"./Plots_High/Cross_section_mH{mass_phi}_mS{mass_s}.png") #create a new fodlder ' Plots ' and save the fig in it
+    print(f"./Plots_High/Cross_section_mH{mass_phi}_mS{mass_s}.png") #create a new fodlder ' Plots ' and save the fig in it
     plt.close()
 
 #########################################################################################
@@ -758,5 +761,6 @@ def plt_cross_Low(eff_lowETX , tauN, mass_phi, mass_s, branch_HEP_limit, factor)
 
     plt.legend( fontsize = 10, loc=3)
     plt.savefig(f"./Plots_Low/Cross_section_mH{mass_phi}_mS{mass_s}.png") #create a new fodlder ' Plots ' and save the fig in it
+    print(f"./Plots_Low/Cross_section_mH{mass_phi}_mS{mass_s}.png") #create a new fodlder ' Plots ' and save the fig in it
     plt.close()
 

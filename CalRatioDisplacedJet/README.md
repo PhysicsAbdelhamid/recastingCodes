@@ -38,6 +38,8 @@ git clone https://github.com/ThomasChehab/recastingCodes.git ; scp recastingCode
 ```
 source /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/user/atlasLocalSetup.sh ; asetup AnalysisBase,24.2.35
 ```
+> [!NOTE]
+> You may need to ```pip install numpy scipy matplotlib tqdm uproot six mplhep```
 
 6. After entering in the MG konsole, install Pythia8 by writing:
 
@@ -59,7 +61,13 @@ MG is now ready to generate events on your machine ! You can exit it.
 exit
 ```
 
-## Lunching MadGraph jobs and generating the plots:
+While you are here, you need to add the python madgraph library to Python Path:
+
+```
+export PYTHONPATH=$PYTHONPATH:$PWD
+```
+
+## Launching MadGraph jobs and generating the plots:
 
 8. Now, you are ready to create the scripts that MG will use to genetage the events, go to *recastingCodes/CalRatioDisplacedJet/*:
 
@@ -80,21 +88,9 @@ The generation can be relatively long depending on your computing ressources.
 > [!NOTE]
 > Do not forget to activate your python environment or source ATLAS and Athena each time you connect.
 
-You need to add the python madgraph library to Python Path:
 
 ```
-export PYTHONPATH=Full/Path/To/MG5_aMC_v3_4_2/:$PYTHONPATH
-```
 
-And **update the output path in the Computation_Map.py** code before executing it: 
-
-```
-python3 Computation_Map.py
-```
-
-> [!NOTE]
-> You may need to ```pip install numpy scipy matplotlib tqdm uproot```
 
 The limits and values will be saved in text files within the *recastingCodes/CalRatioDisplacedJet/Plots_High* and *Plots_Low* folders so that you do not have to redo the entire runs.
 
-*Remarq: The parallel implementation of Computational map still needs to be done...
