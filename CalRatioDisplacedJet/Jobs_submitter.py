@@ -18,11 +18,11 @@ masses = [
 
 #The full path to where the MadGraph folder is!
 #InDir = "/users/divers/atlas/haddad/home2/MG5_aMC_v3_4_2"  
-InDir = "/AtlasDisk/user/corpe/LLPRecasting2024/MG5_aMC_v3_4_2"  
+InDir = "/AtlasDisk/user/millot/LLPRecasting2024/MG5_aMC_v3_4_2"  
 
 #The full path to where you want all your outputs to be saved 
 #OutDir = "/users/divers/atlas/haddad/scratch/Recasting"  
-OutDir = "/users/divers/atlas/corpe/scratch/Recasting"  
+OutDir = "/users/divers/atlas/millot/scratch/Recasting"  
 
 
 for mass_Phi, mass_S in masses:
