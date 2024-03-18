@@ -2,7 +2,7 @@
 import os
 
 # The number of events you want to generate for each sample
-nevent = 500
+nevent = 5000
 
 #The Phi and S particles masses models you want to generate, i.e [m_Phi, m_S]
 #WARNING: If you plan to use your own machine, run the different masses one by one
@@ -10,19 +10,20 @@ nevent = 500
 masses = [                         
           #[60, 5],
           #[125, 55],
-          #[400, 100],
+	  [200, 75]
+         #[300, 100],
           #[600, 150],
-          [600, 250],
+          #[600, 250],
           #[1000, 275],
           ]
 
 #The full path to where the MadGraph folder is!
 #InDir = "/users/divers/atlas/haddad/home2/MG5_aMC_v3_4_2"  
-InDir = "/AtlasDisk/user/corpe/LLPRecasting2024/MG5_aMC_v3_4_2"  
+InDir = "/users/divers/atlas/millot/home2/MG5_aMC_v3_4_2"  
 
 #The full path to where you want all your outputs to be saved 
 #OutDir = "/users/divers/atlas/haddad/scratch/Recasting"  
-OutDir = "/users/divers/atlas/corpe/scratch/Recasting"  
+OutDir = "/users/divers/atlas/millot/scratch/Recasting"  
 
 
 for mass_Phi, mass_S in masses:
@@ -52,7 +53,7 @@ for mass_Phi, mass_S in masses:
     #Depending on where you want to run MadGraph, use the first command line to run locally
     #Or the second one to run in your lab servers (to be updated accordingly, here is for LPC)
     ##os.system(f"{InDir}/bin/mg5_aMC -f {OutDir}/script_mH{mass_Phi}_mS{mass_S}.txt")
-    os.system(f"qsub -q prod1C7@clratlserv04 -o {OutDir} -e {OutDir} {OutDir}/Job_mH{mass_Phi}_mS{mass_S}.sh")
+    os.system(f"qsub -q prod2C7@clratlserv04 -o {OutDir} -e {OutDir} {OutDir}/Job_mH{mass_Phi}_mS{mass_S}.sh")
     
     
     

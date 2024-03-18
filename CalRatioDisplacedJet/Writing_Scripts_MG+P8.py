@@ -1,7 +1,7 @@
 # This code write script that MG and Pythia will read to generate events
 import os
 
-masses_phi = [1000,600,400,200,125,60]
+masses_phi = [1000,600,400,300,200,125,60]
 masses_S = [275,150,100,50,55,5]
 nevent = [10000,10000,10000,50000,50000,50000]
 
