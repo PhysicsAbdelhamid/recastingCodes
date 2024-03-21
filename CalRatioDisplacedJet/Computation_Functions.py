@@ -154,40 +154,21 @@ def recover(px_tot, py_tot, pz_tot, E_tot, mass_tot,pdg_tot):
     return px_DH1, px_DH2, py_DH1, py_DH2, pz_DH1, pz_DH2, pdg_tot_DH1, pdg_tot_DH2, E_DH1, E_DH2, mass_DH1, mass_DH2
 
 #########################################################################################
-# Computation of the kinematics variable for LLP1 (velocities, beta, gamma, pT the transverse momenta, eta the pseudo-rapidity).
+# Computation of the kinematics variable for LLP (velocities, beta, gamma, pT the transverse momenta, eta the pseudo-rapidity).
 #########################################################################################
 
-def kinematics_DH1(px_DH1, py_DH1, pz_DH1, E_DH1):
+def kinematics(px, py, pz, E):
 
-    vx_DH1 = (px_DH1*c**2)/E_DH1 #compute the velocities in each direction
-    vy_DH1 = (py_DH1*c**2)/E_DH1
-    vz_DH1 = (pz_DH1*c**2)/E_DH1
-    beta_DH1 = np.sqrt(vx_DH1**2 + vy_DH1**2 + vz_DH1**2)/c # compute beta
-    gamma_DH1 = 1/(np.sqrt(1-beta_DH1**2)) # compute gamma
+    vx = (px*c**2)/E #compute the velocities in each direction
+    vy= (py*c**2)/E
+    vz = (pz*c**2)/E
+    beta = np.sqrt(vx**2 + vy**2 + vz**2)/c # compute beta
+    gamma = 1/(np.sqrt(1-beta**2)) # compute gamma
 
-    pT_DH1 = np.sqrt(px_DH1**2 + py_DH1**2)*c # compute the transverse momenta
-    eta_DH1 = np.arctanh(pz_DH1/(np.sqrt(px_DH1**2 + py_DH1**2 + pz_DH1**2))) # compute the pseudorapidity
+    pT = np.sqrt(px**2 + py**2)*c # compute the transverse momenta
+    eta = np.arctanh(pz/(np.sqrt(px**2 + py**2 + pz**2))) # compute the pseudorapidity
 
-    return beta_DH1, gamma_DH1, pT_DH1, eta_DH1
-
-
-#########################################################################################
-# Computation of the kinematics variable for LLP2 (velocities, beta, gamma, pT the transverse momenta, eta the pseudo-rapidity).
-#########################################################################################
-
-def kinematics_DH2(px_DH2, py_DH2, pz_DH2, E_DH2):
-
-    vx_DH2 = (px_DH2*c**2)/E_DH2 #compute the velocities in each direction
-    vy_DH2 = (py_DH2*c**2)/E_DH2
-    vz_DH2 = (pz_DH2*c**2)/E_DH2
-    beta_DH2 = np.sqrt(vx_DH2**2 + vy_DH2**2 + vz_DH2**2)/c # compute beta
-    gamma_DH2 = 1/(np.sqrt(1-beta_DH2**2)) # compute gamma
-
-    pT_DH2 = np.sqrt(px_DH2**2 + py_DH2**2)*c # compute the transverse momenta
-    eta_DH2 = np.arctanh(pz_DH2/(np.sqrt(px_DH2**2 + py_DH2**2 + pz_DH2**2))) # compute the pseudorapidity
-
-    return beta_DH2, gamma_DH2, pT_DH2, eta_DH2
-
+    return beta, gamma, pT, eta 
 #########################################################################################
 # lifetime function.
 #########################################################################################
@@ -369,21 +350,21 @@ def recover_MG_DH1(px, py, pz, E, MASS, pdg):
     return MG_px_DH1, MG_py_DH1,MG_pz_DH1,MG_E_DH1,MG_mass_DH1,MG_pdg_DH1_1
 
 #########################################################################################
-# Computation of the kinematics variable for LLP1 (velocities, beta, gamma, pT the transverse momenta, eta the pseudo-rapidity).
+# Computation of the kinematics variable for LLP (velocities, beta, gamma, pT the transverse momenta, eta the pseudo-rapidity).
 #########################################################################################
 
-def kinematics_MG_DH1(MG_px_DH1,MG_py_DH1,MG_pz_DH1,MG_E_DH1 ):
+def kinematics_MG(MG_px,MG_py,MG_pz,MG_E ):
     
     #MG_ET_DH1 = np.sqrt(MG_px_DH1**2 + MG_py_DH1**2 + MG_mass**2) # Transverse energy calculation
-    MG_vx_DH1 = (MG_px_DH1*c**2)/MG_E_DH1 #compute the velocities in each direction
-    MG_vy_DH1 = (MG_py_DH1*c**2)/MG_E_DH1
-    MG_vz_DH1 = (MG_pz_DH1*c**2)/MG_E_DH1
-    MG_beta_DH1 = np.sqrt(MG_vx_DH1**2 + MG_vy_DH1**2 + MG_vz_DH1**2)/c # compute beta
-    MG_gamma_DH1 = 1/(np.sqrt(1-MG_beta_DH1**2)) # compute gamma
-    MG_pT_DH1 = np.sqrt(MG_px_DH1**2 + MG_py_DH1**2)*c # compute the transverse momenta
-    MG_eta_DH1 = np.arctanh(MG_pz_DH1/(np.sqrt(MG_px_DH1**2 + MG_py_DH1**2 + MG_pz_DH1**2))) # compute the pseudorapidity
+    MG_vx = (MG_px*c**2)/MG_E #compute the velocities in each direction
+    MG_vy = (MG_py*c**2)/MG_E
+    MG_vz = (MG_pz*c**2)/MG_E
+    MG_beta = np.sqrt(MG_vx**2 + MG_vy**2 + MG_vz**2)/c # compute beta
+    MG_gamma = 1/(np.sqrt(1-MG_beta**2)) # compute gamma
+    MG_pT = np.sqrt(MG_px**2 + MG_py**2)*c # compute the transverse momenta
+    MG_eta = np.arctanh(MG_pz/(np.sqrt(MG_px**2 + MG_py**2 + MG_pz**2))) # compute the pseudorapidity
     #MG_eta_DH1 = np.arctanh(MG_pz_DH1 / MG_ET_DH1)
-    return MG_pT_DH1,MG_eta_DH1, MG_gamma_DH1 #instead of MG_pT_DH1 -> MG_ET_DH1
+    return MG_pT,MG_eta, MG_gamma #instead of MG_pT_DH1 -> MG_ET_DH1
 
 #########################################################################################
 # Recovering the data from LLP2 (PDG ID, px,py,pz,E,mass).
@@ -423,28 +404,11 @@ def recover_MG_DH2(px, py, pz, E, MASS, pdg):
 
     return MG_px_DH2, MG_py_DH2,MG_pz_DH2,MG_E_DH2,MG_mass_DH2,MG_pdg_DH2_1
 
-#########################################################################################
-# Computation of the kinematics variable for LLP2 (velocities, beta, gamma, pT the transverse momenta, eta the pseudo-rapidity).
-#########################################################################################
-
-def kinemamtics_MG_DH2(MG_px_DH2,MG_py_DH2,MG_pz_DH2,MG_E_DH2):
-    
-    #MG_ET_DH2 = np.sqrt(MG_px_DH2**2 + MG_py_DH2**2 + MG_mass**2) # Transverse energy calculation
-    MG_vx_DH2 = (MG_px_DH2*c**2)/MG_E_DH2 #compute the velocities in each direction
-    MG_vy_DH2 = (MG_py_DH2*c**2)/MG_E_DH2
-    MG_vz_DH2 = (MG_pz_DH2*c**2)/MG_E_DH2
-    MG_beta_DH2 = np.sqrt(MG_vx_DH2**2 + MG_vy_DH2**2 + MG_vz_DH2**2)/c # compute beta
-    MG_gamma_DH2 = 1/(np.sqrt(1-MG_beta_DH2**2)) # compute gamma
-
-    MG_pT_DH2 = np.sqrt(MG_px_DH2**2 + MG_py_DH2**2)*c # compute the transverse momenta
-    MG_eta_DH2 = np.arctanh(MG_pz_DH2/(np.sqrt(MG_px_DH2**2 + MG_py_DH2**2 + MG_pz_DH2**2))) # compute the pseudorapidity
-
-    return MG_pT_DH2,MG_eta_DH2, MG_gamma_DH2 #instead of MG_pT_DH2 -> MG_ET_DH2
 
 
 
 #########################################################################################
-# Computation of the efficiency with the map from the data obtained with MG for the high-ET samples (mH <= 400GeV).
+# Computation of the efficiency with the map from the data obtained with MG for the high-ET samples (mH >= 400GeV).
 #########################################################################################
 
 def eff_map_MG_high(MG_pT_DH1, MG_eta_DH1,MG_Lxy_tot_DH1, MG_Lz_tot_DH1, MG_pdg_DH1_1, MG_pT_DH2, MG_eta_DH2, MG_Lxy_tot_DH2, MG_Lz_tot_DH2, MG_pdg_DH2_1, tauN, nevent, mass_phi, mass_s):

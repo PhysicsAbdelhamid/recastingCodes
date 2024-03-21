@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env pythonMG_pdg_DH2_1
 import sys
 import numpy as np
 import scipy.stats
@@ -59,9 +59,9 @@ Nevent = (len(MG_events)) # get the NEvents from the length of the file
 
 px, py, pz, pdg, E, MASS = cmfp.parsing_LHE(MG_events) #Parsing the LHE file
 MG_px_DH1, MG_py_DH1,MG_pz_DH1,MG_E_DH1,MG_mass_DH1,MG_pdg_DH1_1 = cmfp.recover_MG_DH1(px, py, pz, E, MASS, pdg) # Separate data from DH1 and DH2
-MG_pT_DH1,MG_eta_DH1, MG_gamma_DH1 = cmfp.kinematics_MG_DH1(MG_px_DH1,MG_py_DH1,MG_pz_DH1,MG_E_DH1) # Computing kinematics for DH1
+MG_pT_DH1,MG_eta_DH1, MG_gamma_DH1 = cmfp.kinematics_MG(MG_px_DH1,MG_py_DH1,MG_pz_DH1,MG_E_DH1) # Computing kinematics for DH1
 MG_px_DH2, MG_py_DH2,MG_pz_DH2,MG_E_DH2,MG_mass_DH2,MG_pdg_DH2_1 = cmfp.recover_MG_DH2(px, py, pz, E, MASS, pdg) # Separate data from DH1 and DH2
-MG_pT_DH2,MG_eta_DH2, MG_gamma_DH2 = cmfp.kinemamtics_MG_DH2(MG_px_DH2,MG_py_DH2,MG_pz_DH2,MG_E_DH2) # Computing kinematics for DH2
+MG_pT_DH2,MG_eta_DH2, MG_gamma_DH2 = cmfp.kinematics_MG(MG_px_DH2,MG_py_DH2,MG_pz_DH2,MG_E_DH2) # Computing kinematics for DH2
 
 
 print('Now Pythia')
@@ -70,8 +70,8 @@ events = hepmc.HEPMC_EventFile(file_selection) # Open HEPMC file
 px_TOT, py_TOT, pz_TOT, E_TOT, mass_TOT,pdg_TOT = cmfp.parsing_hepmc(events) # Parsing the HEPMC file
 px_tot, py_tot, pz_tot, E_tot, mass_tot, pdg_tot = cmfp.conversion_one_list(px_TOT, py_TOT, pz_TOT, E_TOT, mass_TOT, pdg_TOT) # Obtaining data in one list
 px_DH1, px_DH2, py_DH1, py_DH2, pz_DH1, pz_DH2, pdg_tot_DH1, pdg_tot_DH2, E_DH1, E_DH2, mass_DH1, mass_DH2 = cmfp.recover(px_tot, py_tot, pz_tot, E_tot, mass_tot, pdg_tot) # Separate data from DH1 and DH2
-beta_DH1, gamma_DH1, pT_DH1, eta_DH1 = cmfp.kinematics_DH1(px_DH1, py_DH1, pz_DH1, E_DH1) # Computing kinematics for DH1
-beta_DH2, gamma_DH2, pT_DH2, eta_DH2 = cmfp.kinematics_DH2(px_DH2, py_DH2, pz_DH2, E_DH2) # Computing kinematics for DH2
+beta_DH1, gamma_DH1, pT_DH1, eta_DH1 = cmfp.kinematics(px_DH1, py_DH1, pz_DH1, E_DH1) # Computing kinematics for DH1
+beta_DH2, gamma_DH2, pT_DH2, eta_DH2 = cmfp.kinematics(px_DH2, py_DH2, pz_DH2, E_DH2) # Computing kinematics for DH2
 
 
 Lxy_tot_DH1, Lz_tot_DH1 = cmfp.decaylength(px_DH1, py_DH1, pz_DH1, E_DH1, gamma_DH1, tauN) # Computing the decay length for DH1
