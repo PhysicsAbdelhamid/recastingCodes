@@ -11,7 +11,7 @@ masses = [
           #[60, 5],
           #[125, 55],
 	 # [120, 75],
-         [350, 100],
+         [345, 100],
         # [650, 150],
           #[600, 250],
           #[1000, 275],
@@ -23,7 +23,7 @@ InDir = "/users/divers/atlas/millot/home2/MG5_aMC_v3_4_2"
 
 #The full path to where you want all your outputs to be saved 
 #OutDir = "/users/divers/atlas/haddad/scratch/Recasting"  
-OutDir = "/users/divers/atlas/millot/scratch/Recasting"  
+OutDir = "/users/divers/atlas/millot/scratch/Recasting1"  
 
 
 for mass_Phi, mass_S in masses:
@@ -34,10 +34,11 @@ for mass_Phi, mass_S in masses:
     #To be removed if you haven't access to cvmfs, or simply if you are using your up-to-date python  
     f.write("source /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/user/atlasLocalSetup.sh\n")
     f.write("asetup AnalysisBase,24.2.35\n")
-    #f.write(f"cd {InDir}\n")
-    #f.write(f"pip install numpy -t $PWD\n")
+    f.write(f"cd {InDir}\n")
+    f.write(f"pip install numpy -t $PWD\n")
     f.write(f"export PYTHONPATH={InDir}:$PYTHONPATH\n")
     f.write(f"export TQDM_DISABLE=1\n")
+    f.write(f"python3 -c 'import numpy as np ; print(\"NUMPY PATH\", np.__path__)'\n")
     #Or avtivate your generated python environment
     ##f.write(f"{InDir}/env/Scripts/activate")
     
