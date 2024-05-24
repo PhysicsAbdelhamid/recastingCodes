@@ -12,6 +12,7 @@ import hepmc_parser as hepmc
 import uproot
 import random
 import os
+import pickle
 random.seed(123)
 hep.style.use("ATLAS")
 
@@ -44,6 +45,37 @@ def parsing_hepmc(events):
                 mass_TOT.append(list(p.mass for p in vertex.outcoming)) # recover the mass in GeV
 
             if [p.pdg for p in vertex.incoming] == [35]: # PDGID 35 Dark Higgs
+                pdg_TOT.append((list(p.pdg for p in vertex.outcoming))) # recover the PDG ID of the particle produced
+
+                count = count+1
+                if count==2: ##
+                    break
+                    pass
+
+    return px_TOT, py_TOT, pz_TOT, E_TOT, mass_TOT, pdg_TOT
+
+def parsing_hepmc_ALP(events):
+
+    px_TOT = []
+    py_TOT = []
+    pz_TOT = []
+    E_TOT = []
+    mass_TOT = []
+    pdg_TOT = []
+
+    for ie , event in enumerate(events):
+        count=0
+        for id, vertex in event.vertex.items():
+            particles = sorted([p for p in vertex.outcoming], key = lambda k : k.pdg)
+            particlesIn = sorted([p for p in vertex.incoming], key = lambda k : k.pdg)
+            if 9000005 in [p.pdg for p in particles]  and len(particles)==2 : # PDGID 25 = Higgs, PDGID 35 Dark Higgs
+                px_TOT.append(list(p.px for p in particles)) # recover the x momenta in GeV
+                py_TOT.append(list(p.py for p in particles)) # recover the y momenta in GeV
+                pz_TOT.append(list(p.pz for p in particles)) # recover the z momenta in GeV
+                E_TOT.append(list(p.E for p in particles)) # recover the Energy in GeV
+                mass_TOT.append(list(p.mass for p in particles)) # recover the mass in GeV
+
+            if [p.pdg for p in vertex.incoming] == [9000005] and len(particles)==2: # PDGID 35 Dark Higgs
                 pdg_TOT.append((list(p.pdg for p in vertex.outcoming))) # recover the PDG ID of the particle produced
 
                 count = count+1
@@ -323,6 +355,77 @@ def eff_map_Low(pT_DH1, eta_DH1, Lxy_tot_DH1, Lz_tot_DH1, pdg_tot_DH1, pT_DH2, e
 
     return eff_lowETX
 
+def eff_bdt_WALP(pT_V, eta_V, Lxy_tot_V, Lz_tot_V, pdg_tot_V, pT_ALP, eta_ALP, Lxy_tot_ALP, Lz_tot_ALP, pdg_tot_ALP, E_V, E_ALP, tauN, nevent, mass_phi, mass_s):
+      return eff_bdt_tauN(pT_V, eta_V, Lxy_tot_V, Lz_tot_V, pdg_tot_V, pT_ALP, eta_ALP, Lxy_tot_ALP, Lz_tot_ALP, pdg_tot_ALP, E_V, E_ALP,tauN, nevent, mass_phi, mass_s, "WALP")
+
+def eff_bdt_High(pT_DH1, eta_DH1, Lxy_tot_DH1, Lz_tot_DH1, pdg_tot_DH1, pT_DH2, eta_DH2, Lxy_tot_DH2, Lz_tot_DH2, pdg_tot_DH2, E_DH1, E_DH2, tauN, nevent, mass_phi, mass_s):
+    return eff_bdt_tauN(pT_DH1, eta_DH1, Lxy_tot_DH1, Lz_tot_DH1, pdg_tot_DH1, pT_DH2, eta_DH2, Lxy_tot_DH2, Lz_tot_DH2, pdg_tot_DH2, E_DH1, E_DH2,tauN, nevent, mass_phi, mass_s, "sel1h_036")
+
+def eff_bdt_Low(pT_DH1, eta_DH1, Lxy_tot_DH1, Lz_tot_DH1, pdg_tot_DH1, pT_DH2, eta_DH2, Lxy_tot_DH2, Lz_tot_DH2, pdg_tot_DH2,E_DH1, E_DH2, tauN, nevent, mass_phi, mass_s):
+    return eff_bdt_tauN(pT_DH1, eta_DH1, Lxy_tot_DH1, Lz_tot_DH1, pdg_tot_DH1, pT_DH2, eta_DH2, Lxy_tot_DH2, Lz_tot_DH2, pdg_tot_DH2,E_DH1, E_DH2, tauN, nevent, mass_phi, mass_s, "sel1l_027")
+    
+def eff_bdt_tauN(pT_DH1, eta_DH1, Lxy_tot_DH1, Lz_tot_DH1, pdg_tot_DH1, pT_DH2, eta_DH2, Lxy_tot_DH2, Lz_tot_DH2, pdg_tot_DH2, E_DH1, E_DH2, tauN, nevent, mass_phi, mass_s, sel):
+   eff = []
+   scaler_mean, scaler_std, clf =  load_model(sel)
+   llp1_ET =  np.sqrt(pT_DH1**2 + mass_s**2)
+   llp2_ET =  np.sqrt(pT_DH2**2 + mass_s**2)
+   for index in tqdm.tqdm(range(len(tauN))):
+        if    np.array(Lxy_tot_DH2[index])[np.array(eta_DH2) > 1.5].mean() < 1*0.25 : thisEffA= -1
+        elif  np.array(Lxy_tot_DH2[index])[np.array(eta_DH2) > 1.5].mean() > 4*4 : thisEffA= -1
+        elif  np.array(Lz_tot_DH2[index])[np.array(eta_DH2) < 1.5].mean()  < 3*0.25 : thisEffA= -1
+        elif  np.array(Lz_tot_DH2[index])[np.array(eta_DH2) < 1.5].mean()  > 7*4 : thisEffA= -1
+        else:
+          thisEffA = bdt_eval(pT_DH1, eta_DH1, Lxy_tot_DH1[index], Lz_tot_DH1[index], pdg_tot_DH1, pT_DH2, eta_DH2, Lxy_tot_DH2[index], Lz_tot_DH2[index], pdg_tot_DH2, llp1_ET, llp2_ET,E_DH1, E_DH2, clf, scaler_mean, scaler_std, sel=sel) 
+        eff.append(thisEffA)
+   return eff
+
+def load_model(sel):
+   modelDir = "models"
+   scaler_mean =  np.load(f"{modelDir}/{sel}_scaler_mean.npy")
+   scaler_std =  np.load(f"{modelDir}/{sel}_scaler_std.npy")
+   f = open(f'{modelDir}/{sel}_model.pkl', 'rb')
+   clf = pickle.load(f)
+   reg = None
+   try:
+     fw = open(f'{modelDir}/{sel}_model_weights.pkl', 'rb')
+     reg = pickle.load(fw)
+   except:
+     pass
+   return scaler_mean, scaler_std, [clf, reg]
+
+def bdt_eval(llp1_pT, llp1_eta, llp1_Lxy, llp1_Lz, llp1_child_pdgId, llp2_pT, llp2_eta, llp2_Lxy, llp2_Lz, llp2_child_pdgId, llp1_ET, llp2_ET, llp1_E, llp2_E,clf=None, mean=None, std=None, sel=None):
+  if clf is None:
+    mean, std, clfAndReg =  load_model(sel)
+  clf, reg = clf # bundled with regressor if it exists
+
+  #X = np.array([np.array(llp1_Lxy)*1000, np.array(llp2_Lxy)*1000, np.array(llp1_Lz)*1000, np.array(llp2_Lz)*1000, llp1_eta, llp2_eta, llp1_pT*1000, llp2_pT*1000, llp1_child_pdgId, llp2_child_pdgId]).T
+  #X = np.array([np.array(llp1_Lxy)*1000, np.array(llp2_Lxy)*1000, np.array(llp1_Lz)*1000, np.array(llp2_Lz)*1000, llp1_eta, llp2_eta, llp1_pT*1000, llp2_pT*1000,  llp1_ET*1000, llp2_ET*1000, llp1_child_pdgId, llp2_child_pdgId]).T
+  #print("LC DEBUG Lxy", np.array(llp2_Lxy).mean()) 
+  #print("LC DEBUG Lz", np.array(llp2_Lz).shape) 
+  #print("LC DEBUG eTA", np.array(llp2_eta).shape) 
+  #print("LC DEBUG eT", np.array(llp2_ET).shape) 
+  #print("LC DEBUG pdg", np.array(llp2_child_pdgId).shape) 
+  if sel=="WALP":
+    X = np.array([np.array(llp2_Lxy)*1000, np.array(llp2_Lz)*1000, llp2_eta, llp2_pT*1000, llp2_ET*1000, llp2_child_pdgId,llp1_eta, np.array(llp1_pT)*1000]).T # WALP
+  else:
+    X = np.array([np.array(llp1_Lxy)*1000, np.array(llp2_Lxy)*1000, np.array(llp1_Lz)*1000, np.array(llp2_Lz)*1000, llp1_eta, llp2_eta, llp1_pT*1000, llp2_pT*1000,  llp1_ET*1000, llp2_ET*1000, llp1_child_pdgId, llp2_child_pdgId]).T
+  #print("MEANs", list(mean))
+  #print("MEAN our sample", X.T.mean(axis=1))
+
+  #print("STDs", list(std))
+  #print("STD our sample", X.T.std(axis=1))
+  X = (X - mean) /std
+  pred_proba = clf.predict_proba(X).T
+  den = len(pred_proba[1])
+  #if reg is not None: 
+  #  weights = reg.predict(X)
+  #  pred_proba *= weights
+  #  den = sum(weights)
+  #print("LC DEBUG X rescaled",  X)
+  #print("LC DEBUG len of proba ",  pred_proba)
+  return sum(pred_proba[1])/den
+
+   
 
 #########################################################################################
 #########################################################################################
@@ -615,7 +718,7 @@ def elem_list(HEP, File_HEP_limit) :
     data_HEP = file_HEP[file_HEP.keys()[1]] # open the branch
 
     file_HEP_limit = uproot.open(File_HEP_limit) # open the file from HEP data for the limits
-    branch_HEP_limit = file_HEP_limit[file_HEP_limit.keys()[1]] # open the branch
+    branch_HEP_limit = file_HEP_limit[file_HEP_limit.keys()[2]] # open the branch
 
     return data_HEP, branch_HEP_limit
 
@@ -623,16 +726,23 @@ def elem_list(HEP, File_HEP_limit) :
 # Plots to compare the results of efficiency obtained with MG, MG+Pythia8 (High-ET).
 #########################################################################################
 
-def plt_eff_high(MG_eff_highETX, eff_highETX,tauN, data_HEP,  mass_phi , mass_s):
+def plt_eff(MG_eff_highETX, eff_highETX,tauN, data_HEP,  mass_phi , mass_s, model="HSS"):
+    
+    MG_eff_highETX, eff_highETX,tauN = np.array(MG_eff_highETX), np.array(eff_highETX), np.array(tauN)
+    # only plot within valid range
+    mask =  eff_highETX > 0
+    MG_eff_highETX=MG_eff_highETX[mask]
+    eff_highETX = eff_highETX[mask]
+    tauN = tauN[mask]
 
     ################## PLOT EFFICIENCY ##################
     fig, ax = plt.subplots()
 
     ################## Plot efficiency from MG ##################
-    plt.plot(tauN,MG_eff_highETX, 'k--', linewidth=2, label = 'MG')
+    plt.plot(tauN,MG_eff_highETX, 'k--', linewidth=2, label = 'Map')
 
     ################## Plot efficiency from MG+Pythia8 ##################
-    plt.plot(tauN,eff_highETX, 'r', linewidth=2, label = 'MG + Pythia')
+    plt.plot(tauN,eff_highETX, 'r', linewidth=2, label = 'BDT ')
     
     if data_HEP is not None:
        ################## Plot efficiency from HEP data ##################
@@ -642,77 +752,76 @@ def plt_eff_high(MG_eff_highETX, eff_highETX,tauN, data_HEP,  mass_phi , mass_s)
        plt.fill_between(data_HEP.values(axis='both')[0], data_HEP.values(axis='both')[1] +  data_HEP.errors('high')[1] , data_HEP.values(axis='both')[1] - data_HEP.errors('high')[1] , color = 'blue', label = r'ATLAS, with $\pm$ 1 $\sigma$ error bands',alpha=.7)
  
     ################## Uncertainties from Map ##################
-    plt.fill_between(tauN, np.array(eff_highETX) + 0.25* np.array(eff_highETX), np.array(eff_highETX) - 0.25 * np.array(eff_highETX), label='MG+Pythia8, with error bands ', alpha=.7)
+    plt.fill_between(tauN, np.array(eff_highETX) + 0.25* np.array(eff_highETX), np.array(eff_highETX) - 0.25 * np.array(eff_highETX), label='25\% error bands ', color='r', alpha=.7)
 
     ################## Limits of validity ##################
-    ax.hlines(y=(0.25*(max(eff_highETX))), xmin=0, xmax=1e2, linewidth=2, color='g', label = 'Limits of validity' )
-
     # place a text box in upper left in axes coords
     props = dict(boxstyle='round', facecolor='white', alpha=0.5)
-    ax.text(0.05, 0.95, f" $ m_Φ $ = {mass_phi} GeV, $m_S$ = {mass_s} GeV" , transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
+    if model=="HSS": ax.text(0.05, 0.95, f" $ m_Φ $ = {mass_phi} GeV, $m_S$ = {mass_s} GeV" , transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
+    if model=="ALP": ax.text(0.05, 0.95, f"  $m_a$ = {mass_s} GeV" , transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
 
-    x = np.linspace(0,100)
-    ax.fill_between(x, 0.25*(max(eff_highETX)), color='black', alpha=.2, hatch="/", edgecolor="black", linewidth=1.0) # adding hatch
-    plt.ylim(0) # start at 0
+    #x = np.linspace(0.5,10)
+    #ax.fill_between(x, max(eff_highETX), color='orange', alpha=.2, hatch="/", edgecolor="black", linewidth=1.0, label = 'validity window') # adding hatch
 
     plt.xscale('log')
+    plt.ylim([0, max(eff_highETX)*2]) # start at 0
+    #plt.ylim([1e-4,1]) # start at 0
+    #plt.yscale('log')
     plt.xlabel(r'c$\tau$ [m]', fontsize=20)
     plt.ylabel('Efficiency', fontsize=20 )
-    plt.legend(fontsize = 11, loc=1) # set the legend in the upper right corner
-    plt.savefig(f"./Plots_High/Efficiency_comparison_mH{mass_phi}_mS{mass_s}.png")
-    print(f"./Plots_High/Efficiency_comparison_mH{mass_phi}_mS{mass_s}.png")
+    plt.legend(fontsize = 11, locolor=1) # set the legend in the upper right corner
+    slug = f"{model}_mH{mass_phi}_mS{mass_s}.png"
+    if model=="ALP": slug = f"{model}_mALP{mass_s}"
+    plt.savefig(f"./Plots/Efficiency_comparison_{slug}.png")
+    plt.savefig(f"./Plots/Efficiency_comparison_{slug}.pdf")
+    print(f"./Plots/Efficiency_comparison_{slug}.png")
     plt.close()
+    np.save(f"./Plots/values_{slug}_ctau.npy", tauN)
+    np.save(f"./Plots/values_{slug}_eff.npy", eff_highETX)
 
-
-#########################################################################################
-# Plots to compared the reasults of efficiency obtained with MG, MG+Pythia8 (Low-ET).
-#########################################################################################
-
-def plt_eff_low(MG_eff_lowETX, eff_lowETX,tauN, data_HEP,  mass_phi , mass_s):
+def plt_multi_eff(eff_ctau_pairs_dict, ref=None,  model="HSS"):
+    
 
     ################## PLOT EFFICIENCY ##################
     fig, ax = plt.subplots()
-
-    ################## Plot efficiency from MG ##################
-    plt.plot(tauN,MG_eff_lowETX, 'k--',linewidth=2, label = 'MG')
-
-    ################## Plot efficiency from MG+Pythia8 ##################
-    plt.plot(tauN,eff_lowETX, 'r', linewidth=2 ,label = 'MG + Pythia')
     
-    if data_HEP is not None:
-        ################## Plot efficiency from HEP data ##################
-        plt.plot(data_HEP.values(axis='both')[0],data_HEP.values(axis='both')[1], 'b')
- 
-        ################ Uncertainties from HEP ##################
-        plt.fill_between(data_HEP.values(axis='both')[0], data_HEP.values(axis='both')[1] +  data_HEP.errors('high')[1] , data_HEP.values(axis='both')[1] - data_HEP.errors('high')[1] , color = 'blue', label = r'ATLAS, with $\pm$ 1 $\sigma$ error bands',alpha=.7)
- 
-    ################## Uncertainties from Map ##################
-    plt.fill_between(tauN, np.array(eff_lowETX) + 0.25* np.array(eff_lowETX), np.array(eff_lowETX) - 0.25*np.array(eff_lowETX), label='MG+Pythia8, with error bands ',alpha=.7)
+    maxVal = -1 
+    
+    plt.plot(-1, -1, 'k-', label ="$\mathbfit{ATLAS}$ full analysis")
+    plt.plot(-1, -1, 'k--', label ="MG5 + Py8 + BDT")
+    
+    colors = ['blue', 'orange', 'green', 'red', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan']
+    cIndex = -1
+    for name, values in eff_ctau_pairs_dict.items():
+      cIndex +=1
+      for refName in ref.keys():
+        if name in refName:
+          plt.plot(ref[refName][1],ref[refName][0], '-', color=colors[cIndex], linewidth=2)
 
-    ################## Limits of validity ##################
-    ax.hlines(y=(0.33*(max(eff_lowETX))), xmin=0, xmax=1e2, linewidth=2, color='g', label = 'Limits of validity' )
+      eff, ctau = values
+      if maxVal < max(eff): maxVal=max(eff)
+      plt.plot(ctau,eff, '--', linewidth=2, color=colors[cIndex], label = name)
+      plt.fill_between(ctau, np.array(eff) * 1.25, np.array(eff) * 0.75, color=colors[cIndex], alpha=.7)
+    
 
-    # place a text box in upper left in axes coords
-    props = dict(boxstyle='round', facecolor='white', alpha=0.5)
-    ax.text(0.05, 0.95, f" $ m_Φ $ = {mass_phi} GeV, $m_S$ = {mass_s} GeV" , transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
-
-    x = np.linspace(0,100)
-    ax.fill_between(x, 0.33*(max(eff_lowETX)), color='black', alpha=.2, hatch="/", edgecolor="black", linewidth=1.0) # adding hatch
-    plt.ylim(0) # start at 0
+    ax.text(0.95, 0.95, "$\mathbfit{ATLAS}$ $\mathit{Simulation}$ $\mathit{Internal}$" , transform=ax.transAxes, fontsize=17, verticalalignment='top', horizontalalignment='right')
+    ax.text(0.95, 0.88, f"{model} model" , transform=ax.transAxes, fontsize=14, verticalalignment='top', horizontalalignment='right')
 
     plt.xscale('log')
+    plt.ylim([0, maxVal*1.5]) # start at 0
     plt.xlabel(r'c$\tau$ [m]', fontsize=20)
     plt.ylabel('Efficiency', fontsize=20 )
-    plt.legend( fontsize = 10, loc=1) # set the legend in the upper right corner
-    plt.savefig(f"./Plots_Low/Efficiency_comparison_mH{mass_phi}_mS{mass_s}.png")
-    print(f"./Plots_Low/Efficiency_comparison_mH{mass_phi}_mS{mass_s}.png")
-    plt.close()
+    plt.legend(fontsize = 14, loc=0) # set the legend in the upper right corner
+    plt.savefig(f"./Plots/Efficiency_summary_{model}.png")
+    plt.savefig(f"./Plots/Efficiency_summary_{model}.pdf")
+    print(f"./Plots/Efficiency_summary_{model}.png")
+
 
 #########################################################################################
 # Plot limits obtained with the map, to compare with those obtain by ATLAS (High-ET).
 #########################################################################################
 
-def plt_cross_High(eff_highETX, tauN, mass_phi, mass_s, branch_HEP_limit, factor):
+def plt_cross(eff_highETX, tauN, mass_phi, mass_s, branch_HEP_limit, factor, hepdata_eff=None):
 
     fig, ax = plt.subplots()
 
@@ -721,11 +830,18 @@ def plt_cross_High(eff_highETX, tauN, mass_phi, mass_s, branch_HEP_limit, factor
     Crr_Sec_obs = (Nsobs)/((np.array(eff_highETX)) * 139e3 ) # Luminosity = 139e3 fb**(-1)
 
     plt.plot(tauN, Crr_Sec_obs, 'r', label ='Map results', linewidth = 2)
+    plt.fill_between(tauN,  1.25* np.array(Crr_Sec_obs), 0.75 * np.array(Crr_Sec_obs), label='25\% error bands ', color='r', alpha=.7)
+    if hepdata_eff is not None: 
+       Crr_Sec_obs_hepdata_eff = (Nsobs)/((np.array(hepdata_eff.values(axis='both')[1])) * 139e3 ) # Luminosity = 139e3 fb**(-1)
+       plt.plot(hepdata_eff.values(axis='both')[0], Crr_Sec_obs_hepdata_eff, 'g', label ='Observed', linewidth = 2)
     if branch_HEP_limit is not None:
       plt.plot(np.array(branch_HEP_limit.values(axis='both')[0]), np.array(branch_HEP_limit.values(axis='both')[1]), 'b', label ='Observed', linewidth = 2)
 
+    x = np.linspace(0.5,10)
+    ax.fill_between(x, max(Crr_Sec_obs)*1.1, color='orange', alpha=.2, hatch="/", edgecolor="black", linewidth=1.0, label = 'validity window') # adding hatch
     plt.xscale('log')
     plt.yscale('log')
+    plt.ylim([1e-3, 1e3])
     plt.xlabel(r'c$\tau$ [m]')
     plt.ylabel(r'95% CL limit on $\sigma \times B$ [pb]')
 
@@ -734,38 +850,8 @@ def plt_cross_High(eff_highETX, tauN, mass_phi, mass_s, branch_HEP_limit, factor
     ax.text(0.05, 0.95, f" $ m_Φ $ = {mass_phi} GeV, $m_S$ = {mass_s} GeV" , transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
 
     plt.legend( fontsize = 10, loc=3)
-    plt.savefig(f"./Plots_High/Cross_section_mH{mass_phi}_mS{mass_s}.png") #create a new fodlder ' Plots ' and save the fig in it
-    print(f"./Plots_High/Cross_section_mH{mass_phi}_mS{mass_s}.png") #create a new fodlder ' Plots ' and save the fig in it
-    plt.close()
-
-#########################################################################################
-# Plot limits obtained with the map, to those obtain by ATLAS (Low-ET).
-#########################################################################################
-
-def plt_cross_Low(eff_lowETX , tauN, mass_phi, mass_s, branch_HEP_limit, factor):
-
-    fig, ax = plt.subplots()
-
-    Nsobs = 0.6592 * 26 * factor # nbr of observed events = 26
-
-    Crr_Sec_obs = (Nsobs)/((np.array(eff_lowETX)) * 139e3 )
-
-    plt.plot(tauN, Crr_Sec_obs, 'r', label ='Map results', linewidth = 2)
-    
-    if branch_HEP_limit is not None:
-        plt.plot(tauN, np.array(branch_HEP_limit.values(axis='both')[1]), 'b', label ='Observed', linewidth = 2)
-
-    plt.xscale('log')
-    plt.yscale('log')
-    plt.xlabel(r'c$\tau$ [m]')
-    plt.ylabel(r'95% CL limit on $\sigma \times B$ [pb]')
-
-    # place a text box in upper left in axes coords
-    props = dict(boxstyle='round', facecolor='white', alpha=0.5)
-    ax.text(0.05, 0.95, f" $ m_Φ $ = {mass_phi} GeV, $m_S$ = {mass_s} GeV" , transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
-
-    plt.legend( fontsize = 10, loc=3)
-    plt.savefig(f"./Plots_Low/Cross_section_mH{mass_phi}_mS{mass_s}.png") #create a new fodlder ' Plots ' and save the fig in it
-    print(f"./Plots_Low/Cross_section_mH{mass_phi}_mS{mass_s}.png") #create a new fodlder ' Plots ' and save the fig in it
+    plt.savefig(f"./Plots/Cross_section_mH{mass_phi}_mS{mass_s}.png") #create a new fodlder ' Plots ' and save the fig in it
+    plt.savefig(f"./Plots/Cross_section_mH{mass_phi}_mS{mass_s}.pdf") #create a new fodlder ' Plots ' and save the fig in it
+    print(f"./Plots/Cross_section_mH{mass_phi}_mS{mass_s}.png") #create a new fodlder ' Plots ' and save the fig in it
     plt.close()
 

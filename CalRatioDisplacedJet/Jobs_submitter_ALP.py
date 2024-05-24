@@ -8,20 +8,14 @@ nevent = 20000
 #WARNING: If you plan to use your own machine, run the different masses one by one
 #or consider using the "Writing_Scripts_MG+P8.py" code (that loop over the chosen masses)
 masses = [                         
-          [60, 5],
-          [60, 16],
-          [125, 5],
-          [125, 16],
-          [125, 35],
-          [125, 55],
-          [200, 50],
-          [400, 100],
-          [600, 50],
-          [600, 150],
-          [600, 275],
-          [1000, 50],
-          [1000, 275],
-          [1000, 475],
+          ["W", 0.1],
+          ["W", 0.4],
+          ["W", 1],
+          ["W", 4],
+          ["W", 10],
+          ["W", 40],
+          ["W", 100],
+          ["W", 400],
           ]
 
 #The full path to where the MadGraph folder is!
@@ -33,9 +27,11 @@ InDir = "/AtlasDisk/user/corpe/LLPRecasting2024/MG5_aMC_v3_4_2"
 OutDir = "/users/divers/atlas/corpe/scratch/RecastingBDT"  
 
 
-for mass_Phi, mass_S in masses:
-    
-    f = open(f"{OutDir}/Job_mH{mass_Phi}_mS{mass_S}.sh",'w')
+for mode, mass_Alp in masses:
+     
+    slug = f'mALP{mass_Alp:.6g}_{mode}' 
+  
+    f = open(f"{OutDir}/Job_{slug}.sh",'w')
     
     #These two lines will setup ATLAS and Athena in order to use an updated verision of python (>= 3.7)
     #To be removed if you haven't access to cvmfs, or simply if you are using your up-to-date python  
@@ -48,20 +44,20 @@ for mass_Phi, mass_S in masses:
     #Or avtivate your generated python environment
     ##f.write(f"{InDir}/env/Scripts/activate")
     
-    f.write(f"python3 {InDir}/recastingCodes/CalRatioDisplacedJet/Writing_Scripts_MG+P8_Single.py {mass_Phi} {mass_S} {nevent} {InDir} {OutDir}\n")
+    f.write(f"python3 {InDir}/recastingCodes/CalRatioDisplacedJet/Writing_Scripts_MG+P8_Single_ALP.py {mode} {mass_Alp:.6g} {nevent} {InDir} {OutDir}\n")
     f.write(f"cd {OutDir}\n")
-    #f.write(f"{InDir}/bin/mg5_aMC -f {OutDir}/script_mH{mass_Phi}_mS{mass_S}.txt\n")
+    #f.write(f"{InDir}/bin/mg5_aMC -f {OutDir}/script_{slug}.txt\n")
     f.write(f"cd {InDir}/recastingCodes/CalRatioDisplacedJet/\n")
-    f.write(f"python3 {InDir}/recastingCodes/CalRatioDisplacedJet//Computation_Map_Single.py {mass_Phi} {mass_S} {InDir} {OutDir} \n")
+    f.write(f"python3 {InDir}/recastingCodes/CalRatioDisplacedJet//Computation_Map_Single_ALP.py {mode} {mass_Alp:.6g} {InDir} {OutDir} \n")
     f.close()
     
-    os.system(f"chmod +x {OutDir}/Job_mH{mass_Phi}_mS{mass_S}.sh")
+    os.system(f"chmod +x {OutDir}/Job_{slug}.sh")
     
     #Depending on where you want to run MadGraph, use the first command line to run locally
     #Or the second one to run in your lab servers (to be updated accordingly, here is for LPC)
     ##os.system(f"{InDir}/bin/mg5_aMC -f {OutDir}/script_mH{mass_Phi}_mS{mass_S}.txt")
-    os.system(f"qsub -q prod1C7@clratlserv04 -o {OutDir} -e {OutDir} {OutDir}/Job_mH{mass_Phi}_mS{mass_S}.sh")
-    print(f"{OutDir}/Job_mH{mass_Phi}_mS{mass_S}.sh")
+    os.system(f"qsub -q prod1C7@clratlserv04 -o {OutDir} -e {OutDir} {OutDir}/Job_{slug}.sh")
+    print(f"{OutDir}/Job_{slug}.sh")
     
     
     
