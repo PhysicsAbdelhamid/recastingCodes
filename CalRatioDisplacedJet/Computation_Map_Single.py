@@ -21,6 +21,8 @@ mass_S = int(sys.argv[2])
 
 InDir = sys.argv[3]
 OutDir = sys.argv[4]
+model = sys.argv[5]
+mode = sys.argv[6]
 
 hasHEPData=0
 
@@ -47,8 +49,10 @@ factor = 0.048 if mass_Phi==125 else 1
 #Constant
 c = 3e8# Light velocity in m/s
 
-os.system("mkdir -p Plots_High")
-os.system("mkdir -p Plots_Low")
+os.system(f"mkdir -p Plots_High/HAHM_{mode}_version/{mass_Phi}_{mass_S}/Cross_section")
+os.system(f"mkdir -p Plots_High/HAHM_{mode}_version/{mass_Phi}_{mass_S}/Efficiencies")
+os.system(f"mkdir -p Plots_Low/HAHM_{mode}_version/{mass_Phi}_{mass_S}/Cross_section")
+os.system(f"mkdir -p Plots_Low/HAHM_{mode}_version/{mass_Phi}_{mass_S}/Efficiencies")
 
 tauN=np.geomspace(0.1,1e2, 200)
 
@@ -96,11 +100,11 @@ if mass_Phi >= 400: # Condition if the sample is "High-ET" or " Low-ET"
     print('Map eval with Pythia')
     eff_highETX = cmfp.eff_map_High(pT_DH1, eta_DH1, Lxy_tot_DH1, Lz_tot_DH1, abs(pdg_tot_DH1), pT_DH2, eta_DH2, Lxy_tot_DH2, Lz_tot_DH2, abs(pdg_tot_DH2), tauN, Nevent,  mass_Phi, mass_S) # Compute the efficiency from Pythia
     print('Plotting...')
-    cmfp.plt_eff_high(MG_eff_highETX, eff_highETX, tauN, data_HEP, mass_Phi, mass_S,Nevent ) # Ploting and saving a comparison of all the results of efficiencies
-    cmfp.plt_cross_High(eff_highETX, tauN, mass_Phi, mass_S, branch_HEP_limit, factor)# Ploting and saving a comparison of the limits obtained with the map and by ATLAS.
+    cmfp.plt_eff_high(MG_eff_highETX, eff_highETX, tauN, data_HEP, mass_Phi, mass_S,Nevent,mode ) # Ploting and saving a comparison of all the results of efficiencies
+    cmfp.plt_cross_High(eff_highETX, tauN, mass_Phi, mass_S, branch_HEP_limit, factor,Nevent,mode)# Ploting and saving a comparison of the limits obtained with the map and by ATLAS.
 
 else:
     MG_eff_lowETX = cmfp.eff_map_MG_low(MG_pT_DH1, MG_eta_DH1,MG_Lxy_tot_DH1, MG_Lz_tot_DH1, MG_pdg_DH1_1, MG_pT_DH2, MG_eta_DH2, MG_Lxy_tot_DH2, MG_Lz_tot_DH2, MG_pdg_DH2_1, tauN, Nevent, mass_Phi, mass_S)
     eff_lowETX = cmfp.eff_map_Low(pT_DH1, eta_DH1, Lxy_tot_DH1, Lz_tot_DH1, abs(pdg_tot_DH1), pT_DH2, eta_DH2, Lxy_tot_DH2, Lz_tot_DH2, abs(pdg_tot_DH2), tauN, Nevent, mass_Phi, mass_S)
-    cmfp.plt_eff_low(MG_eff_lowETX, eff_lowETX, tauN, data_HEP, mass_Phi, mass_S,Nevent)
-    cmfp.plt_cross_Low(eff_lowETX, tauN, mass_Phi, mass_S, branch_HEP_limit, factor)
+    cmfp.plt_eff_low(MG_eff_lowETX, eff_lowETX, tauN, data_HEP, mass_Phi, mass_S,Nevent,mode)
+    cmfp.plt_cross_Low(eff_lowETX, tauN, mass_Phi, mass_S, branch_HEP_limit, factor,Nevent,mode)

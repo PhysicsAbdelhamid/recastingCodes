@@ -9,9 +9,11 @@ nevent = int(sys.argv[3])
 InDir = sys.argv[4]
 OutDir = sys.argv[5]
 
+model = sys.argv[6]
+mode = sys.argv[7]
 
 f = open(f"{OutDir}/script_mH{mass_Phi}_mS{mass_S}.txt", 'w') # Creation of the Script to follow for MG.
-f.write(f"import model {InDir}/HAHM_MG5model_v3/HAHM_variableMW_v3_UFO \n") # Import the model.
+f.write(f"import model {InDir}/HAHM_MG5model_v3/{model} \n") # Import the model.
 f.write(f"define f = u c d s u~ c~ d~ s~ b b~ e+ e- mu+ mu- ta+ ta- t t~ \n") # Define a fermion.
 f.write(f"generate g g > h HIG=1 HIW=0 QED=0 QCD=0, (h > h2 h2, h2 > f f) \n") # Generate the process.
 f.write(f"output Script_mH{mass_Phi}_mS{mass_S} \n")
@@ -21,7 +23,7 @@ f.write(f"0 \n") #Launch the computation
 f.write(f"set nevents = {nevent} \n" ) # change the number of event
 f.write(f"set mhsinput {mass_S} \n") # Set a mass for the LLP.
 f.write(f"set mhinput {mass_Phi} \n") # Set a mass for the Heavy Neutral Boson.
-f.write(f"set epsilon 1e-10 \n") # Set the couplings for epsilon.
+f.write(f"set xi 83 \n") # Set the couplings for epsilon.
 f.write(f"set kap 1e-4 \n") # Set the couplings for kappa.
 f.write(f"set time_of_flight 0 \n" ) # Set the time of flight of the particle.
 f.write(f"set event_norm = sum \n" )

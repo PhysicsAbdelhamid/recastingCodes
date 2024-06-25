@@ -158,13 +158,17 @@ def recover(px_tot, py_tot, pz_tot, E_tot, mass_tot,pdg_tot):
 #########################################################################################
 
 def kinematics(px, py, pz, E):
-
+    #print ('kinematics')
     vx = (px*c**2)/E #compute the velocities in each direction
     vy= (py*c**2)/E
     vz = (pz*c**2)/E
     beta = np.sqrt(vx**2 + vy**2 + vz**2)/c # compute beta
     gamma = 1/(np.sqrt(1-beta**2)) # compute gamma
-
+    #print (px)
+    #print (py)
+    #print(pz)
+    #print (E)
+    #print ('----------------//----------------')
     pT = np.sqrt(px**2 + py**2)*c # compute the transverse momenta
     eta = np.arctanh(pz/(np.sqrt(px**2 + py**2 + pz**2))) # compute the pseudorapidity
 
@@ -173,7 +177,7 @@ def kinematics(px, py, pz, E):
 # lifetime function.
 #########################################################################################
 
-def lifetime(avgtau = 4.3):
+def lifetime(avgtau):
     import math
     avgtau = avgtau / c
     t = random.random()
@@ -183,11 +187,12 @@ def lifetime(avgtau = 4.3):
 # Decay lenght computation for LLP1 LLP2 and MG
 #########################################################################################
 def decaylength(px, py, pz, E, gamma, tauN):
+    #print ('decaylength')
     Lx_tot = []
     Ly_tot = []
     Lz_tot = []
     Lxy_tot = []
-
+    print('length of gamma : ', len(gamma))
     for ctau in range(len(tauN)):
         Lx = []
         Ly = []
@@ -196,6 +201,12 @@ def decaylength(px, py, pz, E, gamma, tauN):
 
         for i in range(len(gamma)):
             lt = lifetime(tauN[ctau]) # set mean lifetime
+            #print('i :', i)
+            #print('px : ' , px[i])
+            #print('py : ' , py[i])
+            #print('pz : ', pz[i])
+            #print('E : ', E)
+            #print (gamma)
             Lx.append((px[i]/E[i])*c**2 * lt * gamma[i]) # compute the decay length in x,y,z
             Ly.append((py[i]/E[i])*c**2 * lt * gamma[i])
             Lz.append((abs(pz[i])/E[i])*c**2 * lt * gamma[i])
@@ -238,7 +249,7 @@ def eff_map_High(pT_DH1, eta_DH1, Lxy_tot_DH1, Lz_tot_DH1, pdg_tot_DH1, pT_DH2, 
     eff_highETX = eff_highETX/nevent #efficiency/(nbr of event)
 
     Data_Eff_High = np.column_stack(eff_highETX)
-    np.savetxt(f'./Plots_High/Efficiencies_Text_{mass_phi}_{mass_s}.txt', Data_Eff_High)
+    #np.savetxt(f'./Plots_High/HAHM_{mode}_version/{mass_phi}_{mass_s}/Efficiencies/Efficiencies_Text_{mass_phi}_{mass_s}_nevents{nevent}.txt', Data_Eff_High)
 
     return eff_highETX
 
@@ -270,7 +281,7 @@ def eff_map_Low(pT_DH1, eta_DH1, Lxy_tot_DH1, Lz_tot_DH1, pdg_tot_DH1, pT_DH2, e
     eff_lowETX = eff_lowETX/nevent #efficiency/(nbr of event)
 
     Data_Eff_Low = np.column_stack(eff_lowETX)
-    np.savetxt(f'./Plots_Low/Efficiencies_Text_{mass_phi}_{mass_s}.txt', Data_Eff_Low)
+    #np.savetxt(f'./Plots_Low/HAHM_{mode}_version/{mass_phi}_{mass_s}/Efficiencies/Efficiencies_Text_{mass_phi}_{mass_s}_nevent{nevent}.txt', Data_Eff_Low)
 
     return eff_lowETX
 
@@ -435,7 +446,7 @@ def eff_map_MG_high(MG_pT_DH1, MG_eta_DH1,MG_Lxy_tot_DH1, MG_Lz_tot_DH1, MG_pdg_
     MG_eff_highETX = MG_eff_highETX/nevent #eff/nbrevent
 
     MG_Data_Eff_High = np.column_stack(MG_eff_highETX)
-    np.savetxt(f'./Plots_High/Efficiencies_Text_{mass_phi}_{mass_s}.txt', MG_Data_Eff_High)
+    #np.savetxt(f'./Plots_High/HAHM_{mode}_version/{mass_phi}_{mass_s}/Efficiencies/Efficiencies_Text_{mass_phi}_{mass_s}_nevents{nevent}.txt', MG_Data_Eff_High)
 
     return MG_eff_highETX
 
@@ -467,7 +478,7 @@ def eff_map_MG_low(MG_pT_DH1, MG_eta_DH1,MG_Lxy_tot_DH1, MG_Lz_tot_DH1, MG_pdg_D
     MG_eff_lowETX = MG_eff_lowETX/nevent #eff/nbrevent
 
     MG_Data_Eff_Low = np.column_stack(MG_eff_lowETX)
-    np.savetxt(f'./Plots_Low/Efficiencies_Text_{mass_phi}_{mass_s}.txt', MG_Data_Eff_Low)
+    #np.savetxt(f'./Plots_Low/HAHM_{mode}_version/{mass_phi}_{mass_s}/Efficiencies/Efficiencies_Text_{mass_phi}_{mass_s}_nevents{nevent}EFF_MAP.txt', MG_Data_Eff_Low)
 
     return MG_eff_lowETX
 
@@ -497,7 +508,7 @@ def elem_list(HEP, File_HEP_limit) :
 # Plots to compare the results of efficiency obtained with MG, MG+Pythia8 (High-ET).
 #########################################################################################
 
-def plt_eff_high(MG_eff_highETX, eff_highETX,tauN, data_HEP,  mass_phi , mass_s,Nevent):
+def plt_eff_high(MG_eff_highETX, eff_highETX,tauN, data_HEP,  mass_phi , mass_s,Nevent,mode):
 
     ################## PLOT EFFICIENCY ##################
     fig, ax = plt.subplots()
@@ -523,7 +534,7 @@ def plt_eff_high(MG_eff_highETX, eff_highETX,tauN, data_HEP,  mass_phi , mass_s,
 
     # place a text box in upper left in axes coords
     props = dict(boxstyle='round', facecolor='white', alpha=0.5)
-    ax.text(0.05, 0.95, f" $ m_Φ $ = {mass_phi} GeV, $m_S$ = {mass_s} GeV, nb_events={Nevent}" , transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
+    ax.text(0.05, 0.95, f" $ m_Φ $ = {mass_phi} GeV, $m_S$ = {mass_s} GeV" , transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
     ax.text(0.05, 0.85, f"$Nevents$ = {Nevent} ", transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
     x = np.linspace(0,100)
     ax.fill_between(x, 0.25*(max(eff_highETX)), color='black', alpha=.2, hatch="/", edgecolor="black", linewidth=1.0) # adding hatch
@@ -533,8 +544,12 @@ def plt_eff_high(MG_eff_highETX, eff_highETX,tauN, data_HEP,  mass_phi , mass_s,
     plt.xlabel(r'c$\tau$ [m]', fontsize=20)
     plt.ylabel('Efficiency', fontsize=20 )
     plt.legend(fontsize = 11, loc=1) # set the legend in the upper right corner
-    plt.savefig(f"./Plots_High/Efficiency_comparison_mH{mass_phi}_mS{mass_s}_nevents{Nevent}.png")
-    print(f"./Plots_High/Efficiency_comparison_mH{mass_phi}_mS{mass_s}_nevents{Nevent}.png")
+    plt.savefig(f"./Plots_High/HAHM_{mode}_version/{mass_phi}_{mass_s}/Efficiencies/Efficiency_comparaison_mH{mass_phi}_mS{mass_s}_nevents{Nevent}.png")
+    print(f"./Plots_High/HAHM_{mode}_version/{mass_phi}_{mass_s}/Efficiencies/Efficiency_comparaison_mH{mass_phi}_mS{mass_s}_nevents{Nevent}.png")
+
+    np.savetxt(f'./Plots_High/HAHM_{mode}_version/{mass_phi}_{mass_s}/Efficiencies/Efficiency_comparaison_mH{mass_phi}_mS{mass_s}_nevents{Nevent}_MG_only.txt',MG_eff_highETX )
+    np.savetxt(f'./Plots_High/HAHM_{mode}_version/{mass_phi}_{mass_s}/Efficiencies/Efficiency_comparaison_mH{mass_phi}_mS{mass_s}_nevents{Nevent}MG+pythia.txt',eff_highETX )
+    np.savetxt(f'./Plots_High/HAHM_{mode}_version/{mass_phi}_{mass_s}/Efficiencies/Efficiency_comparaison_mH{mass_phi}_mS{mass_s}_nevents{Nevent}_ctau.txt',tauN )
     plt.close()
 
 
@@ -542,7 +557,7 @@ def plt_eff_high(MG_eff_highETX, eff_highETX,tauN, data_HEP,  mass_phi , mass_s,
 # Plots to compared the reasults of efficiency obtained with MG, MG+Pythia8 (Low-ET).
 #########################################################################################
 
-def plt_eff_low(MG_eff_lowETX, eff_lowETX,tauN, data_HEP,  mass_phi , mass_s,Nevent):
+def plt_eff_low(MG_eff_lowETX, eff_lowETX,tauN, data_HEP,  mass_phi , mass_s,Nevent,mode):
 
     ################## PLOT EFFICIENCY ##################
     fig, ax = plt.subplots()
@@ -578,15 +593,19 @@ def plt_eff_low(MG_eff_lowETX, eff_lowETX,tauN, data_HEP,  mass_phi , mass_s,Nev
     plt.xlabel(r'c$\tau$ [m]', fontsize=20)
     plt.ylabel('Efficiency', fontsize=20 )
     plt.legend( fontsize = 10, loc=1) # set the legend in the upper right corner
-    plt.savefig(f"./Plots_Low/Efficiency_comparison_mH{mass_phi}_mS{mass_s}_nevents{Nevent}.png")
-    print(f"./Plots_Low/Efficiency_comparison_mH{mass_phi}_mS{mass_s}_nevents{Nevent}.png")
+    plt.savefig(f"./Plots_Low/HAHM_{mode}_version/{mass_phi}_{mass_s}/Efficiencies/Efficiency_comparaison_mH{mass_phi}_mS{mass_s}_nevents{Nevent}.png")
+    print(f"./Plots_Low/HAHM_{mode}_version/{mass_phi}_{mass_s}/Efficiencies/Efficiency_comparaison_mH{mass_phi}_mS{mass_s}_nevents{Nevent}.png")
+
+    np.savetxt(f'./Plots_Low/HAHM_{mode}_version/{mass_phi}_{mass_s}/Efficiencies/Efficiency_comparaison_mH{mass_phi}_mS{mass_s}_nevents{Nevent}_MG_only.txt',MG_eff_lowETX )
+    np.savetxt(f'./Plots_Low/HAHM_{mode}_version/{mass_phi}_{mass_s}/Efficiencies/Efficiency_comparaison_mH{mass_phi}_mS{mass_s}_nevents{Nevent}_MG+pythia.txt',eff_lowETX )
+    np.savetxt(f'./Plots_Low/HAHM_{mode}_version/{mass_phi}_{mass_s}/Efficiencies/Efficiency_comparaison_mH{mass_phi}_mS{mass_s}_nevents{Nevent}_ctau.txt',tauN )
     plt.close()
 
 #########################################################################################
 # Plot limits obtained with the map, to compare with those obtain by ATLAS (High-ET).
 #########################################################################################
 
-def plt_cross_High(eff_highETX, tauN, mass_phi, mass_s, branch_HEP_limit, factor):
+def plt_cross_High(eff_highETX, tauN, mass_phi, mass_s, branch_HEP_limit, factor,Nevent,mode):
 
     fig, ax = plt.subplots()
 
@@ -606,17 +625,19 @@ def plt_cross_High(eff_highETX, tauN, mass_phi, mass_s, branch_HEP_limit, factor
     # place a text box in upper left in axes coords
     props = dict(boxstyle='round', facecolor='white', alpha=0.5)
     ax.text(0.05, 0.95, f" $ m_Φ $ = {mass_phi} GeV, $m_S$ = {mass_s} GeV" , transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
-
+    ax.text(0.05, 0.85, f"$Nevents$ = {Nevent}", transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
     plt.legend( fontsize = 10, loc=3)
-    plt.savefig(f"./Plots_High/Cross_section_mH{mass_phi}_mS{mass_s}.png") #create a new fodlder ' Plots ' and save the fig in it
-    print(f"./Plots_High/Cross_section_mH{mass_phi}_mS{mass_s}.png") #create a new fodlder ' Plots ' and save the fig in it
+    plt.savefig(f"./Plots_High/HAHM_{mode}_version/{mass_phi}_{mass_s}/Cross_section/Cross_section_mH{mass_phi}_mS{mass_s}_nevents{Nevent}.png") #create a new fodlder ' Plots ' and save the fig in it
+    print(f"./Plots_High/HAHM_{mode}_version/{mass_phi}_{mass_s}/Cross_section/Cross_section_mH{mass_phi}_mS{mass_s}_nevents{Nevent}.png") #create a new fodlder ' Plots ' and save the fig in it
+    np.savetxt(f'./Plots_High/HAHM_{mode}_version/{mass_phi}_{mass_s}/Cross_section/Cross_section_mH{mass_phi}_mS{mass_s}_nevents{Nevent}.txt', Crr_Sec_obs)
+    np.savetxt(f'./Plots_High/HAHM_{mode}_version/{mass_phi}_{mass_s}/Cross_section/Cross_section_mH{mass_phi}_mS{mass_s}_nevents{Nevent}_ctau.txt', tauN)
     plt.close()
 
 #########################################################################################
 # Plot limits obtained with the map, to those obtain by ATLAS (Low-ET).
 #########################################################################################
 
-def plt_cross_Low(eff_lowETX , tauN, mass_phi, mass_s, branch_HEP_limit, factor):
+def plt_cross_Low(eff_lowETX , tauN, mass_phi, mass_s, branch_HEP_limit, factor,Nevent,mode):
 
     fig, ax = plt.subplots()
 
@@ -637,9 +658,12 @@ def plt_cross_Low(eff_lowETX , tauN, mass_phi, mass_s, branch_HEP_limit, factor)
     # place a text box in upper left in axes coords
     props = dict(boxstyle='round', facecolor='white', alpha=0.5)
     ax.text(0.05, 0.95, f" $ m_Φ $ = {mass_phi} GeV, $m_S$ = {mass_s} GeV" , transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
-
+    ax.text(0.05, 0.85, f"$Nevents$ = {Nevent}", transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
     plt.legend( fontsize = 10, loc=3)
-    plt.savefig(f"./Plots_Low/Cross_section_mH{mass_phi}_mS{mass_s}.png") #create a new fodlder ' Plots ' and save the fig in it
-    print(f"./Plots_Low/Cross_section_mH{mass_phi}_mS{mass_s}.png") #create a new fodlder ' Plots ' and save the fig in it
+    plt.savefig(f"./Plots_Low/HAHM_{mode}_version/{mass_phi}_{mass_s}/Cross_section/Cross_section_mH{mass_phi}_mS{mass_s}_nevents{Nevent}.png") #create a new fodlder ' Plots ' and save the fig in it
+    print(f"./Plots_Low/HAHM_{mode}_version/{mass_phi}_{mass_s}/Cross_section/Cross_section_mH{mass_phi}_mS{mass_s}_nevents{Nevent}.png") #create a new fodlder ' Plots ' and save the fig in it
+    np.savetxt(f'./Plots_Low/HAHM_{mode}_version/{mass_phi}_{mass_s}/Cross_section/Cross_section_mH{mass_phi}_mS{mass_s}_nevents{Nevent}.txt', Crr_Sec_obs)
+    np.savetxt(f'./Plots_Low/HAHM_{mode}_version/{mass_phi}_{mass_s}/Cross_section/Cross_section_mH{mass_phi}_mS{mass_s}_nevents{Nevent}_ctau.txt', tauN)
     plt.close()
+
 

@@ -8,13 +8,17 @@ nevent = 5000
 #WARNING: If you plan to use your own machine, run the different masses one by one
 #or consider using the "Writing_Scripts_MG+P8.py" code (that loop over the chosen masses)
 masses = [                         
-          #[60, 5],
-          #[125, 55],
-	 # [120, 75],
-         [345, 100],
-        # [650, 150],
-          #[600, 250],
+          #[150, 50],
+	      #[125, 55],
+          #[200, 50],
+          #[310, 150],
+          #[400, 100],
+          #[600, 150],
           #[1000, 275],
+          [1000, 400]
+          #[1000, 300]
+          #[900, 200]
+          
           ]
 
 #The full path to where the MadGraph folder is!
@@ -23,8 +27,10 @@ InDir = "/users/divers/atlas/millot/home2/MG5_aMC_v3_4_2"
 
 #The full path to where you want all your outputs to be saved 
 #OutDir = "/users/divers/atlas/haddad/scratch/Recasting"  
-OutDir = "/users/divers/atlas/millot/scratch/Recasting1"  
+OutDir = "/users/divers/atlas/millot/scratch/Recasting_HAHM_gluons_version"  # "/users/divers/atlas/millot/scratch/Recasting_HAHM_past_version" or "/users/divers/atlas/millot/scratch/Recasting_HAHM_gluons_version"
 
+model = "HAHM_gluons_UFO" # "HAHM_variableMW_v3_UFO" or "HAHM_gluons_UFO"
+mode = "new" #"old" or "new"
 
 for mass_Phi, mass_S in masses:
     
@@ -42,11 +48,11 @@ for mass_Phi, mass_S in masses:
     #Or avtivate your generated python environment
     ##f.write(f"{InDir}/env/Scripts/activate")
     
-    f.write(f"python3 {InDir}/recastingCodes/CalRatioDisplacedJet/Writing_Scripts_MG+P8_Single.py {mass_Phi} {mass_S} {nevent} {InDir} {OutDir}\n")
+    f.write(f"python3 {InDir}/recastingCodes/CalRatioDisplacedJet/Writing_Scripts_MG+P8_Single.py {mass_Phi} {mass_S} {nevent} {InDir} {OutDir} {model} {mode}\n")
     f.write(f"cd {OutDir}\n")
     f.write(f"{InDir}/bin/mg5_aMC -f {OutDir}/script_mH{mass_Phi}_mS{mass_S}.txt\n")
     f.write(f"cd {InDir}/recastingCodes/CalRatioDisplacedJet/\n")
-    f.write(f"python3 {InDir}/recastingCodes/CalRatioDisplacedJet//Computation_Map_Single.py {mass_Phi} {mass_S} {InDir} {OutDir} \n")
+    f.write(f"python3 {InDir}/recastingCodes/CalRatioDisplacedJet//Computation_Map_Single.py {mass_Phi} {mass_S} {InDir} {OutDir} {model} {mode}\n")
     f.close()
     
     os.system(f"chmod +x {OutDir}/Job_mH{mass_Phi}_mS{mass_S}.sh")
