@@ -1,0 +1,84 @@
+# This file was automatically created by FeynRules 2.3.49
+# Mathematica version: 12.0.0 for Linux x86 (64-bit) (April 7, 2019)
+# Date: Fri 5 Jul 2024 11:30:12
+
+
+# 
+# This is the logfile for the model HAHM_asym_model
+
+# Authors: C. Duhr, David Curtin
+# Model version: 2.3.31
+# Checking the Quantum numbers
+   * Electric charge defined.
+# Checking the Lagrangians
+   * All Lagrangians are ok.
+#
+# Particle definitions
+#
+
+   * No particles removed. All particles correspond to GenInt setup.
+   >>> Some antiparticle names are not strings!
+   >>> Some antiparticle names are not strings!
+
+
+
+# Compulsory PDG codes:
+   * Class SM leptons complete.
+   * Class SM neutrinos incomplete. 12, 14, 16 missing.
+   * Class SM quarks complete.
+   * Class SM gauge bosons incomplete. 23, 24 missing.
+#
+# Parameter definitions
+#
+
+   * All parameters are ok.
+
+
+# Vertices
+   * Calling FeynmanRules for 1 Lagrangians.
+   * Number of classes vertices: 14
+   * Number of flavored vertices: 26
+   * Saved vertices in InterfaceRun[ 1 ].
+   * Checked QNumber conservation.
+      - Quantum number LeptonNumber conserved in all vertices.
+      - Quantum number Q conserved in all vertices.
+      - Quantum number Y conserved in all vertices.
+   * particles.py written.
+   * parameters.py written.
+#
+# Vertex definitions
+#
+
+   * 26 vertices written.
+   * vertices.py written.
+#
+# Lorentz structure definitions
+#
+
+   * 12 lorentz structures written.
+   * lorentz.py written.
+#
+# Coupling definitions
+#
+
+   >>>> Non positive interaction order QED found for coupling GC_7.
+   * 21 couplings written.
+   * couplings.py written.
+#
+# Coupling order definitions
+#
+
+   * 0 couplings orders written.
+   * coupling_orders.py written.
+#
+# Decay definitions
+#
+
+   * 3 decays written.
+   * decay.py not written
+#
+# CTCoupling definitions
+#
+
+   * 0 CTcouplings written.
+   * CT_couplings.py written.

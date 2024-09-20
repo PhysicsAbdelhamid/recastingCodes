@@ -6,6 +6,10 @@ export COOL_ORA_ENABLE_ADAPTIVE_OPT="Y"
 export ASETUP_PRINTLEVEL="0"
 export BINARY_TAG="x86_64-centos7-gcc11-opt"
 export CMTCONFIG="x86_64-centos7-gcc11-opt"
+if [ -z "${AtlasSetup:+x}" ]; then
+    export AtlasSetup="/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/AtlasSetup/V03-00-18/AtlasSetup"
+    export AtlasSetupVersion="AtlasSetup-03-00-18"
+fi
 
 if [ -d /tmp/millot ]; then
    export ASETUP_SYSBIN=`mktemp -d /tmp/millot/.asetup-sysbin-XXXXXX_$$`
@@ -13,6 +17,7 @@ else
    export ASETUP_SYSBIN=`mktemp -d /AtlasDisk/home2/millot/MG5_aMC_v3_4_2/recastingCodes/CalRatioDisplacedJet/Asym/.asetup-sysbin-XXXXXX_$$`
 fi
 source $AtlasSetup/scripts/sys_exe-alias.sh ''
+export PATH="${ASETUP_SYSBIN}:${PATH}"
 if [ -n "${MAKEFLAGS:+x}" ]; then
     asetup_flags=`echo ${MAKEFLAGS} | \grep ' -l'`
     if [ -z "${asetup_flags}" ]; then
@@ -39,28 +44,22 @@ if [ -z "${FC:+x}" ]; then
     [[ -z "$FC" ]] && unset FC
 fi
 export CMAKE_NO_VERBOSE="1"
-if [ -z "${CMAKE_BUILD_PARALLEL_LEVEL:+x}" ]; then
-    export CMAKE_BUILD_PARALLEL_LEVEL="40"
-fi
+export CMAKE_BUILD_PARALLEL_LEVEL="40"
 type lsetup >/dev/null 2>/dev/null
 if [ $? -ne 0 ]; then
    source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh --quiet
 fi
 source $ATLAS_LOCAL_ROOT_BASE/packageSetups/localSetup.sh --quiet "cmake 3.27.5"
-if [ -z "${AtlasSetup:+x}" ]; then
-    export AtlasSetup="/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/AtlasSetup/V03-00-14/AtlasSetup"
-    export AtlasSetupVersion="AtlasSetup-03-00-14"
-fi
-export AtlasBaseDir="/cvmfs/atlas.cern.ch/repo/sw/software/24.2"
-export LCG_RELEASE_BASE="/cvmfs/atlas.cern.ch/repo/sw/software/24.2/sw/lcg/releases"
-export AtlasBuildStamp="2023-12-21T0220"
-export AtlasReleaseType="stable"
-export AtlasBuildBranch="24.2"
-export AtlasProject="AnalysisBase"
-export TDAQ_RELEASE_BASE="/cvmfs/atlas.cern.ch/repo/sw/tdaq/offline"
-export ATLAS_RELEASE_BASE="/cvmfs/atlas.cern.ch/repo/sw/software/24.2"
-export AtlasArea="/cvmfs/atlas.cern.ch/repo/sw/software/24.2/AnalysisBase/24.2.35"
 export AtlasVersion="24.2.35"
+export AtlasProject="AnalysisBase"
+export AtlasBaseDir="/cvmfs/atlas.cern.ch/repo/sw/software/24.2"
+export ATLAS_RELEASE_BASE="/cvmfs/atlas.cern.ch/repo/sw/software/24.2"
+export AtlasBuildBranch="24.2"
+export AtlasArea="/cvmfs/atlas.cern.ch/repo/sw/software/24.2/AnalysisBase/24.2.35"
+export AtlasReleaseType="stable"
+export AtlasBuildStamp="2023-12-21T0220"
+export LCG_RELEASE_BASE="/cvmfs/atlas.cern.ch/repo/sw/software/24.2/sw/lcg/releases"
+export TDAQ_RELEASE_BASE="/cvmfs/atlas.cern.ch/repo/sw/tdaq/offline"
 source /cvmfs/atlas.cern.ch/repo/sw/software/24.2/AnalysisBase/24.2.35/InstallArea/x86_64-centos7-gcc11-opt/setup.sh
 asetup_status=$?
 if [ ${asetup_status} -ne 0 ]; then
@@ -76,7 +75,6 @@ fi
 if [ $? -ne 0 ]; then
     echo -e '\nMaking workaround-alias for expr on this *OLD* machine'; alias_sys_exe expr
 fi
-export PATH="${ASETUP_SYSBIN}:${PATH}"
 
 # resolution for the rucio conflict
 pythonpath_items=$(echo $PYTHONPATH | tr ":" "\n")

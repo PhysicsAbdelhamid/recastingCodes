@@ -11,7 +11,7 @@ nevent=10000
 ###################################################################################################################################################
 # import data from lifetime parametrized model 
 
-files = glob.glob(f"../Results/Efficiency_mH{mass_Phi}_mS1_{mass_S1}_mS2_{mass_S2}_ct1_*_ct2_*_nevents{nevent}.txt")
+files = glob.glob(f"../Results/Results_new/Efficiency_mH{mass_Phi}_mS1_{mass_S1}_mS2_{mass_S2}_ct1_*_ct2_*_nevents{nevent}.txt")
 print(files)
 ct1Values = []
 ct2Values = []
@@ -111,11 +111,11 @@ ax2.set_ylabel('Ratio of efficiencies')
 ax2.set_xscale('log')
 
 ax2.set_ylim(0, 2)
-ax2.axhline(y=4, color='black', linestyle='--')
+ax2.axhline(y=1, color='black', linestyle='--')
 ax2.grid(True)
 ax2.legend()
 
 plt.show()
-plt.savefig(f'Comparaison_global_mH{mass_Phi}_ms1_{mass_S1}_ms2_{mass_S2}_nevents{nevent}.png')
-plt.savefig(f'Comparaison_global_mH{mass_Phi}_ms1_{mass_S1}_ms2_{mass_S2}_nevents{nevent}.pdf')
+plt.savefig(f'Comparaison_global_mH{mass_Phi}_ms1_{mass_S1}_ms2_{mass_S2}_nevents{nevent}_new.png')
+plt.savefig(f'Comparaison_global_mH{mass_Phi}_ms1_{mass_S1}_ms2_{mass_S2}_nevents{nevent}_new.pdf')
 plt.close()

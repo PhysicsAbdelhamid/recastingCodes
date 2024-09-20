@@ -1,0 +1,9 @@
+Bon, pour resumer un peu! Ca marche, mais j'aurais voulu t'eviter d'avoir a taper le mot de passe a chaque fois
+
+normallement, en mettant le bon id_rsa comme fichier d'identite, le host (clratlser) ne te demande plus de mote de passe
+
+Maaaais, pour ton cas, ca change le millot en millo 
+
+je vais y penser et on y reviendra plus tard :) Ok je vois ! Merci beaucoup vraiment ! -> avec joie, bon courage Merci toi aussi !
+
+deconnecte moi stp mdrr oui XD 

@@ -85,7 +85,7 @@ for particleName, particleData in result.items():
 #print('results llp1 pT : ', result['llp1']['pT'])
 
 # Save efficiency to a file
-output_file = f"./Asym/Results/Efficiency_mH{mass_Phi}_mS1_{mass_S1}_mS2_{mass_S2}_ct1_{ct1}_ct2_{ct2}_nevents{nevent}.txt"
+output_file = f"./Asym/Results/Results_new/Efficiency_mH{mass_Phi}_mS1_{mass_S1}_mS2_{mass_S2}_ct1_{ct1}_ct2_{ct2}_nevents{nevent}.txt"
 
 if mass_Phi >= 400: # Condition if the sample is "High-ET" or " Low-ET"
     print('Map eval with Pythia')
