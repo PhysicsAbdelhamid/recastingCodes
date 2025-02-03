@@ -14,6 +14,7 @@ f = open(f"{OutDir}/script_{slug}.txt", 'w') # Creation of the Script to follow 
 #f.write(f"import model {InDir}/HAHM_MG5model_v3/HAHM_variableMW_v3_UFO \n") # Import the model.
 #f.write(f"define f = u c d s u~ c~ d~ s~ b b~ e+ e- mu+ mu- ta+ ta- t t~ \n") # Define a fermion.
 #f.write(f"generate g g > h HIG=1 HIW=0 QED=0 QCD=0, (h > h2 h2, h2 > f f) \n") # Generate the process.
+f.write(f"set auto_convert_model T \n")
 f.write(f"import model sm \n")
 f.write(f"import model {InDir}/ALP_linear_UFO_WIDTH \n")
 f.write(f"define p = g u c d s u~ c~ d~ s~ \n")
