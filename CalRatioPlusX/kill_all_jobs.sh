@@ -1,0 +1,54 @@
+#!/bin/bash
+# 
+# Should be automated..
+
+qdel 574201.clratlserv04
+qdel 574202.clratlserv04
+qdel 574203.clratlserv04
+qdel 574204.clratlserv04
+qdel 574205.clratlserv04
+qdel 574206.clratlserv04
+qdel 574207.clratlserv04
+qdel 574208.clratlserv04
+qdel 574209.clratlserv04
+qdel 574210.clratlserv04
+qdel 574211.clratlserv04
+qdel 574212.clratlserv04
+qdel 574213.clratlserv04
+qdel 574214.clratlserv04
+qdel 574215.clratlserv04
+qdel 574216.clratlserv04
+qdel 574217.clratlserv04
+qdel 574218.clratlserv04
+qdel 574219.clratlserv04
+qdel 574220.clratlserv04
+qdel 574221.clratlserv04
+qdel 574222.clratlserv04
+qdel 574223.clratlserv04
+qdel 574224.clratlserv04
+qdel 574225.clratlserv04
+qdel 574226.clratlserv04
+qdel 574227.clratlserv04
+qdel 574228.clratlserv04
+qdel 574229.clratlserv04
+qdel 574230.clratlserv04
+qdel 574231.clratlserv04
+qdel 574232.clratlserv04
+qdel 574233.clratlserv04
+qdel 574234.clratlserv04
+qdel 574235.clratlserv04
+qdel 574236.clratlserv04
+qdel 574237.clratlserv04
+qdel 574238.clratlserv04
+qdel 574239.clratlserv04
+qdel 574240.clratlserv04
+qdel 574241.clratlserv04
+qdel 574242.clratlserv04
+qdel 574243.clratlserv04
+qdel 574244.clratlserv04
+qdel 574245.clratlserv04
+qdel 574246.clratlserv04
+qdel 574247.clratlserv04
+qdel 574248.clratlserv04
+qdel 574249.clratlserv04
+qdel 574250.clratlserv04
